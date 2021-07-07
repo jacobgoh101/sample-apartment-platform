@@ -1,8 +1,0 @@
-{
-    "baseUrl": "http://localhost:9090",
-    "env": {
-        "login_url": "/login",
-        "signup_url": "/signup",
-        "password": "Pa$$w0rd!"
-    }
-}
