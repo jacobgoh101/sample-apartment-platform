@@ -4,6 +4,8 @@ import router from './router';
 import store from './store';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bulma-social/bin/bulma-social.min.css';
 import { QueryClient, VUE_QUERY_CLIENT } from 'vue-query';
 import { ValidationObserver } from 'vee-validate';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

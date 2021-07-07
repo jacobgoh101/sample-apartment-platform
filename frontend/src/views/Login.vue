@@ -39,18 +39,37 @@
                 <b-field class="mt-5 is-flex is-justify-content-flex-end">
                   <button
                     type="submit"
-                    class="button is-primary"
+                    class="button is-primary is-fullwidth"
                     :class="{ 'is-loading': isLoading }"
                     :disabled="pristine || invalid"
                   >
                     Login
                   </button>
                 </b-field>
+
+                <div class="is-divider" data-content="OR"></div>
+
+                <a class="button is-google is-fullwidth" title=".is-google">
+                  <span class="icon">
+                    <i class="fab fa-google"></i>
+                  </span>
+                  <span>Sign in with Google</span>
+                </a>
+                <a class="button is-github is-fullwidth" title=".is-github">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Sign in with Github</span>
+                </a>
               </form>
             </ValidationObserver>
-            <!-- <div class="is-flex is-justify-content-center">
-              <router-link :to="$route"> Forgot Password </router-link>
-            </div> -->
+
+            <div class="is-flex is-justify-content-center">
+              Don't have an account?
+              <router-link :to="{ name: 'Signup' }" class="pl-1">
+                Sign up
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -84,3 +103,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.button.is-google {
+  margin-bottom: 10px;
+}
+</style>
