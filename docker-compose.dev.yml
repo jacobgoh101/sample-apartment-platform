@@ -1,0 +1,41 @@
+version: "3.5"
+
+services:
+  database:
+    image: "kartoza/postgis:13-3.1"
+    env_file:
+      - .env
+    ports:
+      - "${DATABASE_PORT_NUMBER}:5432"
+    environment:
+      POSTGRES_PASS: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_MULTIPLE_EXTENSIONS: postgis,hstore,postgis_topology,postgis_raster,pgrouting
+    container_name: toptal_database
+    volumes:
+      - toptal_pgdata:/var/lib/postgresql/data
+    networks:
+      - toptal
+    restart: unless-stopped
+
+  # redis:
+  #   image: "bitnami/redis:5.0"
+  #   container_name: toptal_redis
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes #is recommended only for development.
+  #     - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+  #   ports:
+  #     - "${REDIS_PORT_NUMBER}:${REDIS_PORT_NUMBER}"
+  #   volumes:
+  #     - "redis_data:/bitnami/redis/data"
+  #   networks:
+  #     - toptal
+
+volumes:
+  redis_data:
+  toptal_pgdata:
+
+networks:
+  toptal:
+    name: toptal

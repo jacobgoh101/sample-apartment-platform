@@ -1,0 +1,16 @@
+{
+  "name": "toptal-screening",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://git.toptal.com/screening/Jacob-Goh-Chuan-Ching",
+  "author": "Jacob Goh <jacob.goh@123rf.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^6.0.0"
+  },
+  "scripts": {
+    "start": "export $(xargs < .env) && concurrently -n docker,backend,frontend 'docker-compose -f docker-compose.dev.yml up -d' 'yarn --cwd backend && yarn --cwd backend start:dev' 'yarn --cwd frontend && yarn --cwd frontend serve --port ${FRONTEND_PORT_NUMBER}'",
+    "stop": "docker-compose -f docker-compose.dev.yml stop",
+    "down": "docker-compose -f docker-compose.dev.yml down"
+  }
+}
