@@ -63,7 +63,11 @@
 
                 <div class="is-divider" data-content="OR"></div>
 
-                <a class="button is-google is-fullwidth" title=".is-google">
+                <a
+                  class="button is-google is-fullwidth"
+                  title=".is-google"
+                  @click="googleLogin"
+                >
                   <span class="icon">
                     <i class="fab fa-google"></i>
                   </span>
@@ -94,9 +98,11 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import {
   useAfterAuthRedirection,
+  useCreateSessionFromGoogleLogin,
   useSignup,
 } from '@/hooks/authentication.hook';
 import { AxiosError } from 'axios';
+import { useSocialLogin } from '../hooks/hellojs.hook';
 
 export default defineComponent({
   setup() {
@@ -104,12 +110,25 @@ export default defineComponent({
     const name = ref<string>('');
     const password = ref<string>('');
 
-    const { isLoading, isSuccess, error, mutate } = useSignup({
+    const { isLoading, isSuccess: isSignupSuccess, error, mutate } = useSignup({
       name,
       password,
       email,
     });
-    useAfterAuthRedirection(isSuccess);
+
+    const { googleLogin, onSuccess: onSocialLoginSuccess } = useSocialLogin();
+    const {
+      mutate: createSessionFromGoogleToken,
+      isSuccess: isGoogleLoginSuccess,
+    } = useCreateSessionFromGoogleLogin();
+
+    onSocialLoginSuccess((resp) => {
+      createSessionFromGoogleToken(resp.session.access_token || '');
+    });
+
+    useAfterAuthRedirection(
+      computed(() => isSignupSuccess.value || isGoogleLoginSuccess.value)
+    );
 
     const errMsg = computed(() => {
       return (error.value as AxiosError)?.response?.data?.message;
@@ -120,7 +139,7 @@ export default defineComponent({
       name,
       password,
       isLoading,
-      isSuccess,
+      googleLogin,
       error,
       mutate,
       errMsg,

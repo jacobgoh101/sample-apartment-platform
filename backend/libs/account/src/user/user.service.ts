@@ -34,7 +34,21 @@ export class UserService {
       user,
     } as SignupEventDto);
 
-    // TODO: double check if password is returned
+    return user;
+  }
+
+  async upsertWithoutPassword(data: Omit<SignUpDto, 'password'>) {
+    const { email, name } = data;
+    const user = await this.userModel
+      .query()
+      .insert({ email, name })
+      .onConflict('email')
+      .merge();
+
+    this.eventEmitter.emit(USER_EVENT.SIGNUP, {
+      user,
+    } as SignupEventDto);
+
     return user;
   }
 

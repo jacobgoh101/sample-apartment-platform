@@ -21,4 +21,6 @@ export const ENV = {
   isDev: process.env.NODE_ENV === 'development',
   isStaging: process.env.NODE_ENV === 'staging',
   isProd: process.env.NODE_ENV === 'production',
+  GOOGLE_OAUTH2_CLIENT_ID: process.env.GOOGLE_OAUTH2_CLIENT_ID,
+  GOOGLE_OAUTH2_CLIENT_SECRET: process.env.GOOGLE_OAUTH2_CLIENT_SECRET,
 };

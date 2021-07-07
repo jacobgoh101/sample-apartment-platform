@@ -1,4 +1,4 @@
-import { ENV } from '../../../config/env';
+import { knexInstance } from '../../../../apps/web/src/database/database.module';
 import { UserModel } from '../user/user.model';
 import { mockSignUpDto } from '../user/user.repo-fake';
 import { UserService } from '../user/user.service';
@@ -6,26 +6,13 @@ import { AuthService } from './auth.service';
 import { SessionModel } from './session.model';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
-import Knex from 'knex';
-import { knexSnakeCaseMappers } from 'objection';
 
 describe('AuthService', () => {
   let service: AuthService;
   let knex: any;
 
   beforeEach(async () => {
-    knex = Knex({
-      client: 'pg',
-      connection: {
-        host: ENV.DB_HOST,
-        port: +ENV.DB_PORT,
-        user: ENV.DB_USERNAME,
-        password: ENV.DB_PASSWORD,
-        database: ENV.DB_NAME,
-      },
-      debug: process.env.KNEX_DEBUG === 'true',
-      ...knexSnakeCaseMappers(),
-    });
+    knex = knexInstance;
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [EventEmitterModule.forRoot()],

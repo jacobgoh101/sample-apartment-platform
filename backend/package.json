@@ -47,6 +47,7 @@
     "luxon": "^1.26.0",
     "objection": "^2.2.15",
     "passport": "^0.4.1",
+    "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
     "patch-package": "^6.4.7",
     "pg": "^8.6.0",

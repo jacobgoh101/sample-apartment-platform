@@ -1,5 +1,6 @@
 import {
   getMeApi,
+  googleLoginApi,
   loginApi,
   logoutApi,
   signupApi,
@@ -8,6 +9,7 @@ import { useRoles } from './rbac.hook';
 import { computed, reactive, Ref, watch } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
 import { useRouter } from '../router';
+import { useClearSocialSession } from './hellojs.hook';
 
 export const useSignup = ({
   name,
@@ -59,6 +61,22 @@ export const useLogin = ({
   );
 };
 
+export const useCreateSessionFromGoogleLogin = () => {
+  const { refreshAuth } = useAuth();
+  return useMutation(
+    reactive(['google-login']),
+    (accessToken: string) => {
+      return googleLoginApi({ accessToken });
+    },
+    {
+      retry: false,
+      onSuccess() {
+        refreshAuth();
+      },
+    }
+  );
+};
+
 export const useMe = () => {
   return useQuery(
     'get-me',
@@ -87,8 +105,10 @@ export const useAuth = () => {
 
 export const useLogout = () => {
   const { refreshAuth } = useAuth();
+  const { clear } = useClearSocialSession();
   return useMutation('logout', () => logoutApi(), {
     onSuccess() {
+      clear();
       refreshAuth();
     },
   });

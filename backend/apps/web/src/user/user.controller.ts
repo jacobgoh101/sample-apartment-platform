@@ -1,3 +1,4 @@
+import { GoogleLoginGuard } from '../../../../libs/account/src/auth/google-login.guard';
 import { LoginGuard } from '../../../../libs/account/src/auth/login.guard';
 import {
   SignUpDto,
@@ -50,6 +51,12 @@ export class UserController {
   @UseGuards(LoginGuard)
   @Post('/sessions')
   login() {
+    return;
+  }
+
+  @UseGuards(GoogleLoginGuard)
+  @Post('/sessions/social/google')
+  loginWithGoogleOauth2() {
     return;
   }
 

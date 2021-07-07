@@ -49,7 +49,11 @@
 
                 <div class="is-divider" data-content="OR"></div>
 
-                <a class="button is-google is-fullwidth" title=".is-google">
+                <a
+                  class="button is-google is-fullwidth"
+                  title=".is-google"
+                  @click="googleLogin"
+                >
                   <span class="icon">
                     <i class="fab fa-google"></i>
                   </span>
@@ -78,27 +82,50 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
-import { useAfterAuthRedirection, useLogin } from '@/hooks/authentication.hook';
+import { computed, defineComponent, ref } from '@vue/composition-api';
+import {
+  useAfterAuthRedirection,
+  useCreateSessionFromGoogleLogin,
+  useLogin,
+} from '@/hooks/authentication.hook';
+import { useSocialLogin } from '@/hooks/hellojs.hook';
 
 export default defineComponent({
   setup() {
     const email = ref<string>('');
     const password = ref<string>('');
 
-    const { isLoading, isSuccess, error, mutate } = useLogin({
+    const {
+      isLoading,
+      isSuccess: isNormalLoginSuccess,
+      error,
+      mutate,
+    } = useLogin({
       email,
       password,
     });
-    useAfterAuthRedirection(isSuccess);
+
+    const { googleLogin, onSuccess: onSocialLoginSuccess } = useSocialLogin();
+    const {
+      mutate: createSessionFromGoogleToken,
+      isSuccess: isGoogleLoginSuccess,
+    } = useCreateSessionFromGoogleLogin();
+
+    onSocialLoginSuccess((resp) => {
+      createSessionFromGoogleToken(resp.session.access_token || '');
+    });
+
+    useAfterAuthRedirection(
+      computed(() => isNormalLoginSuccess.value || isGoogleLoginSuccess.value)
+    );
 
     return {
       email,
       password,
       isLoading,
-      isSuccess,
       error,
       mutate,
+      googleLogin,
     };
   },
 });

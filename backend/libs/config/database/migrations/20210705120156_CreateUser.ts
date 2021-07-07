@@ -8,8 +8,8 @@ export async function up(knex: Knex) {
     t.increments();
     t.timestamps();
 
-    t.string('email', 10000);
-    t.text('passwordHash');
+    t.string('email', 10000).unique();
+    t.text('passwordHash').nullable();
     t.text('name');
   });
 }

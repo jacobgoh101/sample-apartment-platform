@@ -14,26 +14,27 @@ const modelProviders = models.map((model) => {
   };
 });
 
+export const knexInstance = Knex({
+  client: 'pg',
+  connection: {
+    host: ENV.DB_HOST,
+    port: +ENV.DB_PORT,
+    user: ENV.DB_USERNAME,
+    password: ENV.DB_PASSWORD,
+    database: ENV.DB_NAME,
+  },
+  debug: process.env.KNEX_DEBUG === 'true',
+  ...knexSnakeCaseMappers(),
+  pool: { min: 0, max: 20 },
+});
+
 const providers = [
   ...modelProviders,
   {
     provide: 'KnexConnection',
     useFactory: async () => {
-      const knex = Knex({
-        client: 'pg',
-        connection: {
-          host: ENV.DB_HOST,
-          port: +ENV.DB_PORT,
-          user: ENV.DB_USERNAME,
-          password: ENV.DB_PASSWORD,
-          database: ENV.DB_NAME,
-        },
-        debug: process.env.KNEX_DEBUG === 'true',
-        ...knexSnakeCaseMappers(),
-      });
-
-      Model.knex(knex);
-      return knex;
+      Model.knex(knexInstance);
+      return knexInstance;
     },
   },
 ];
