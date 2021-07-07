@@ -6,11 +6,18 @@
   "author": "Jacob Goh <jacob.goh@123rf.com>",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^6.0.0"
+    "concurrently": "^6.0.0",
+    "cz-conventional-changelog": "3.3.0",
+    "commitizen": "^4.2.4"
   },
   "scripts": {
     "start": "export $(xargs < .env) && concurrently -n docker,backend,frontend 'docker-compose -f docker-compose.dev.yml up -d' 'yarn --cwd backend && yarn --cwd backend start:dev' 'yarn --cwd frontend && yarn --cwd frontend serve --port ${FRONTEND_PORT_NUMBER}'",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
