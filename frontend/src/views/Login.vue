@@ -87,13 +87,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
-import {
-  useAfterAuthRedirection,
-  useCreateSessionFromFacebookLogin,
-  useCreateSessionFromGoogleLogin,
-  useLogin,
-} from '@/hooks/authentication.hook';
+import { useAfterAuthRedirection, useLogin } from '@/hooks/authentication.hook';
 import { useSocialLogin } from '@/hooks/hellojs.hook';
+import { useSome } from '../hooks/util.hook';
 
 export default defineComponent({
   setup() {
@@ -113,31 +109,15 @@ export default defineComponent({
     const {
       googleLogin,
       facebookLogin,
-      onSuccess: onSocialLoginSuccess,
+      isGoogleLoginSuccess,
+      isFacebookLoginSuccess,
     } = useSocialLogin();
-    const {
-      mutate: createSessionFromGoogleToken,
-      isSuccess: isGoogleLoginSuccess,
-    } = useCreateSessionFromGoogleLogin();
-    const {
-      mutate: createSessionFromFacebookToken,
-      isSuccess: isFacebookLoginSuccess,
-    } = useCreateSessionFromFacebookLogin();
-
-    onSocialLoginSuccess((resp) => {
-      console.log({ resp });
-      resp.network === 'google' &&
-        createSessionFromGoogleToken(resp.session.access_token || '');
-      resp.network === 'facebook' &&
-        createSessionFromFacebookToken(resp.session.access_token || '');
-    });
 
     useAfterAuthRedirection(
-      computed(
-        () =>
-          isNormalLoginSuccess.value ||
-          isGoogleLoginSuccess.value ||
-          isFacebookLoginSuccess.value
+      useSome(
+        isNormalLoginSuccess,
+        isGoogleLoginSuccess,
+        isFacebookLoginSuccess
       )
     );
 

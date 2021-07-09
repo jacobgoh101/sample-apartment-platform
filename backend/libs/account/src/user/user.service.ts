@@ -8,6 +8,7 @@ import { USER_EVENT } from './user.constant';
 import { SignUpDto, SignupEventDto, UpdateUserDto } from './user.dto';
 import { UserModel } from './user.model';
 import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { EventEmitter2 } from 'eventemitter2';
 import { omit } from 'lodash';
 import { ModelClass } from 'objection';
@@ -37,13 +38,22 @@ export class UserService {
     return user;
   }
 
-  async upsertWithoutPassword(data: Omit<SignUpDto, 'password'>) {
-    const { email, name } = data;
+  async createByGoogle(
+    data: Pick<UserModel, 'email' | 'name' | 'googleAccountId'>,
+  ) {
+    const { email, name, googleAccountId } = data;
+
+    if (
+      (await this.userModel.query().where({ googleAccountId }).resultSize()) > 0
+    ) {
+      throw new ConflictException(
+        'This Google account had signed up before. Please Log In.',
+      );
+    }
+
     const user = await this.userModel
       .query()
-      .insert({ email, name })
-      .onConflict('email')
-      .merge();
+      .insert({ email, name, googleAccountId });
 
     this.eventEmitter.emit(USER_EVENT.SIGNUP, {
       user,
@@ -52,14 +62,48 @@ export class UserService {
     return user;
   }
 
-  async isEmailUsed({ email }: { email: string }): Promise<boolean> {
-    const emailExist = await this.userModel
+  findByGoogle(googleAccountId: string) {
+    return this.userModel.query().findOne({ googleAccountId });
+  }
+
+  async createByFacebook(
+    data: Pick<UserModel, 'email' | 'name' | 'facebookAccountId'>,
+  ) {
+    const { email, name, facebookAccountId } = data;
+
+    if (
+      (await this.userModel.query().where({ facebookAccountId }).resultSize()) >
+      0
+    ) {
+      throw new ConflictException(
+        'This Facebook account had signed up before. Please Log In.',
+      );
+    }
+
+    const user = await this.userModel
       .query()
-      .where('email', email)
-      .resultSize()
-      .then((c) => c > 0);
-    if (emailExist) return true;
-    return false;
+      .insert({ email, name, facebookAccountId });
+
+    this.eventEmitter.emit(USER_EVENT.SIGNUP, {
+      user,
+    } as SignupEventDto);
+
+    return user;
+  }
+
+  findByFacebook(facebookAccountId: string) {
+    return this.userModel.query().findOne({ facebookAccountId });
+  }
+
+  async isEmailUsed({ email }: { email: string }): Promise<boolean> {
+    return (
+      (await this.userModel
+        .query()
+        .where('email', email)
+        .whereNull('googleAccountId')
+        .whereNull('facebookAccountId')
+        .resultSize()) > 0
+    );
   }
 
   async findOneById(id: number) {
@@ -68,6 +112,14 @@ export class UserService {
 
   async findOneByEmail(email: string) {
     return this.userModel.query().findOne({ email });
+  }
+
+  async findOneNonSocialUserByEmail(email: string) {
+    return this.userModel
+      .query()
+      .findOne({ email })
+      .whereNull('googleAccountId')
+      .whereNull('facebookAccountId');
   }
 
   async paginate(options: IPaginationOptions): Promise<Pagination<UserModel>> {

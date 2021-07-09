@@ -6,7 +6,10 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
 
 @Injectable()
-export class GoogleLoginStrategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleLoginStrategy extends PassportStrategy(
+  Strategy,
+  'google-login',
+) {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
@@ -25,8 +28,16 @@ export class GoogleLoginStrategy extends PassportStrategy(Strategy, 'google') {
       throw new UnauthorizedException();
     }
 
-    const { email, name } = verified;
-    const user = await this.userService.upsertWithoutPassword({ email, name });
+    const { sub, name, email } = verified;
+    let user = await this.userService.findByGoogle(sub);
+    if (!user) {
+      // auto sign up
+      user = await this.userService.createByGoogle({
+        email,
+        name,
+        googleAccountId: sub,
+      });
+    }
     return user;
   }
 }

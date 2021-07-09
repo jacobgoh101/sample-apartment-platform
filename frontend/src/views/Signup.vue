@@ -102,10 +102,9 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import {
   useAfterAuthRedirection,
-  useCreateSessionFromFacebookLogin,
-  useCreateSessionFromGoogleLogin,
   useSignup,
 } from '@/hooks/authentication.hook';
+import { useSome } from '@/hooks/util.hook';
 import { AxiosError } from 'axios';
 import { useSocialLogin } from '../hooks/hellojs.hook';
 
@@ -124,32 +123,12 @@ export default defineComponent({
     const {
       googleLogin,
       facebookLogin,
-      onSuccess: onSocialLoginSuccess,
+      isGoogleLoginSuccess,
+      isFacebookLoginSuccess,
     } = useSocialLogin();
-    const {
-      mutate: createSessionFromGoogleToken,
-      isSuccess: isGoogleLoginSuccess,
-    } = useCreateSessionFromGoogleLogin();
-    const {
-      mutate: createSessionFromFacebookToken,
-      isSuccess: isFacebookLoginSuccess,
-    } = useCreateSessionFromFacebookLogin();
-
-    onSocialLoginSuccess((resp) => {
-      console.log({ resp });
-      resp.network === 'google' &&
-        createSessionFromGoogleToken(resp.session.access_token || '');
-      resp.network === 'facebook' &&
-        createSessionFromFacebookToken(resp.session.access_token || '');
-    });
 
     useAfterAuthRedirection(
-      computed(
-        () =>
-          isSignupSuccess.value ||
-          isGoogleLoginSuccess.value ||
-          isFacebookLoginSuccess.value
-      )
+      useSome(isSignupSuccess, isGoogleLoginSuccess, isFacebookLoginSuccess)
     );
 
     const errMsg = computed(() => {

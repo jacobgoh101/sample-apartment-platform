@@ -7,6 +7,8 @@ export class UserModel extends BaseModel {
   email: string;
   passwordHash: string;
   name: string;
+  googleAccountId?: string;
+  facebookAccountId?: string;
 
   $formatJson(json) {
     json = super.$formatJson(json);

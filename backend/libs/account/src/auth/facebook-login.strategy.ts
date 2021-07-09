@@ -8,7 +8,7 @@ import { Strategy } from 'passport-custom';
 @Injectable()
 export class FacebookLoginStrategy extends PassportStrategy(
   Strategy,
-  'facebook',
+  'facebook-login',
 ) {
   constructor(
     private readonly authService: AuthService,
@@ -28,8 +28,16 @@ export class FacebookLoginStrategy extends PassportStrategy(
       throw new UnauthorizedException();
     }
 
-    const { email, name } = verified;
-    const user = await this.userService.upsertWithoutPassword({ email, name });
+    const { id, name, email } = verified;
+    let user = await this.userService.findByFacebook(id);
+    if (!user) {
+      // auto sign up
+      user = await this.userService.createByFacebook({
+        email,
+        name,
+        facebookAccountId: id,
+      });
+    }
     return user;
   }
 }

@@ -13,6 +13,14 @@ export interface GoogleVerificationResult {
   locale: string;
 }
 
+export interface FacebookVerificationResult {
+  email: string;
+  first_name: string;
+  last_name: string;
+  name: string;
+  id: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,7 +29,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string): Promise<UserModel | null> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneNonSocialUserByEmail(email);
     const isValid = await user?.comparePassword(pass);
     if (isValid) {
       return user;
@@ -47,7 +55,7 @@ export class AuthService {
 
   async validateFacebookAccessToken(
     accessToken: string,
-  ): Promise<GoogleVerificationResult> {
+  ): Promise<FacebookVerificationResult> {
     return this.httpService
       .get(`https://graph.facebook.com/v2.9/me`, {
         params: {
