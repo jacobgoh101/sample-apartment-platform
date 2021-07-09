@@ -23,7 +23,7 @@ async function bootstrap() {
       secret: ENV.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      name: 'review.sid',
+      name: 'apartment.sid',
       cookie: {
         httpOnly: true,
         maxAge: DATE_TIME.ONE_DAY_IN_MILLISECONDS,

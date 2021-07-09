@@ -73,11 +73,15 @@
                   </span>
                   <span>Sign up with Google</span>
                 </a>
-                <a class="button is-github is-fullwidth" title=".is-github">
+                <a
+                  class="button is-facebook is-fullwidth"
+                  title=".is-facebook"
+                  @click="facebookLogin"
+                >
                   <span class="icon">
-                    <i class="fab fa-github"></i>
+                    <i class="fab fa-facebook"></i>
                   </span>
-                  <span>Sign up with Github</span>
+                  <span>Sign up with Facebook</span>
                 </a>
               </form>
             </ValidationObserver>
@@ -98,6 +102,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import {
   useAfterAuthRedirection,
+  useCreateSessionFromFacebookLogin,
   useCreateSessionFromGoogleLogin,
   useSignup,
 } from '@/hooks/authentication.hook';
@@ -116,18 +121,35 @@ export default defineComponent({
       email,
     });
 
-    const { googleLogin, onSuccess: onSocialLoginSuccess } = useSocialLogin();
+    const {
+      googleLogin,
+      facebookLogin,
+      onSuccess: onSocialLoginSuccess,
+    } = useSocialLogin();
     const {
       mutate: createSessionFromGoogleToken,
       isSuccess: isGoogleLoginSuccess,
     } = useCreateSessionFromGoogleLogin();
+    const {
+      mutate: createSessionFromFacebookToken,
+      isSuccess: isFacebookLoginSuccess,
+    } = useCreateSessionFromFacebookLogin();
 
     onSocialLoginSuccess((resp) => {
-      createSessionFromGoogleToken(resp.session.access_token || '');
+      console.log({ resp });
+      resp.network === 'google' &&
+        createSessionFromGoogleToken(resp.session.access_token || '');
+      resp.network === 'facebook' &&
+        createSessionFromFacebookToken(resp.session.access_token || '');
     });
 
     useAfterAuthRedirection(
-      computed(() => isSignupSuccess.value || isGoogleLoginSuccess.value)
+      computed(
+        () =>
+          isSignupSuccess.value ||
+          isGoogleLoginSuccess.value ||
+          isFacebookLoginSuccess.value
+      )
     );
 
     const errMsg = computed(() => {
@@ -140,6 +162,7 @@ export default defineComponent({
       password,
       isLoading,
       googleLogin,
+      facebookLogin,
       error,
       mutate,
       errMsg,

@@ -1,5 +1,6 @@
 import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
+import { FacebookLoginStrategy } from './facebook-login.strategy';
 import { GoogleLoginStrategy } from './google-login.strategy';
 import { LocalStrategy } from './local.strategy';
 import { SessionSerializer } from './session.serializer';
@@ -12,6 +13,7 @@ import { PassportModule } from '@nestjs/passport';
     AuthService,
     LocalStrategy,
     GoogleLoginStrategy,
+    FacebookLoginStrategy,
     SessionSerializer,
   ],
   exports: [AuthService],

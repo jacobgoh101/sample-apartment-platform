@@ -19,6 +19,9 @@ export const loginApi = ({
 export const googleLoginApi = ({ accessToken }: { accessToken: string }) =>
   $axios.post<undefined>('/sessions/social/google', { accessToken });
 
+export const facebookLoginApi = ({ accessToken }: { accessToken: string }) =>
+  $axios.post<undefined>('/sessions/social/facebook', { accessToken });
+
 export const getMeApi = () => $axios.get<User>('/me');
 
 export const logoutApi = () => $axios.delete<undefined>('/sessions');

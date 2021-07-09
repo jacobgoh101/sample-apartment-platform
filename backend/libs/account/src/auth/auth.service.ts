@@ -44,4 +44,22 @@ export class AuthService {
       })
       .catch(() => null);
   }
+
+  async validateFacebookAccessToken(
+    accessToken: string,
+  ): Promise<GoogleVerificationResult> {
+    return this.httpService
+      .get(`https://graph.facebook.com/v2.9/me`, {
+        params: {
+          fields: 'email,first_name,last_name,name,timezone,verified',
+          access_token: accessToken,
+          suppress_response_codes: true,
+        },
+      })
+      .toPromise()
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(() => null);
+  }
 }

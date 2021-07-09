@@ -1,3 +1,4 @@
+import { FacebookLoginGuard } from '../../../../libs/account/src/auth/facebook-login.guard';
 import { GoogleLoginGuard } from '../../../../libs/account/src/auth/google-login.guard';
 import { LoginGuard } from '../../../../libs/account/src/auth/login.guard';
 import {
@@ -57,6 +58,12 @@ export class UserController {
   @UseGuards(GoogleLoginGuard)
   @Post('/sessions/social/google')
   loginWithGoogleOauth2() {
+    return;
+  }
+
+  @UseGuards(FacebookLoginGuard)
+  @Post('/sessions/social/facebook')
+  loginWithFacebookOauth2() {
     return;
   }
 

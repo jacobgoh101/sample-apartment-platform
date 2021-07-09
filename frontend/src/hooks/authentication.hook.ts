@@ -1,4 +1,5 @@
 import {
+  facebookLoginApi,
   getMeApi,
   googleLoginApi,
   loginApi,
@@ -67,6 +68,21 @@ export const useCreateSessionFromGoogleLogin = () => {
     reactive(['google-login']),
     (accessToken: string) => {
       return googleLoginApi({ accessToken });
+    },
+    {
+      retry: false,
+      onSuccess() {
+        refreshAuth();
+      },
+    }
+  );
+};
+export const useCreateSessionFromFacebookLogin = () => {
+  const { refreshAuth } = useAuth();
+  return useMutation(
+    reactive(['facebook-login']),
+    (accessToken: string) => {
+      return facebookLoginApi({ accessToken });
     },
     {
       retry: false,
