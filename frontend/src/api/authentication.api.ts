@@ -2,7 +2,7 @@ import { SignupDto, User } from '../types/user.types';
 import { $axios } from './axios';
 
 export const signupApi = ({ name, password, email }: SignupDto) =>
-  $axios.post<undefined>('/users', {
+  $axios.post<User>('/users', {
     name,
     password,
     email,

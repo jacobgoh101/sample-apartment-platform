@@ -1,6 +1,7 @@
 import { FacebookLoginGuard } from '../../../../libs/account/src/auth/facebook-login.guard';
 import { GoogleLoginGuard } from '../../../../libs/account/src/auth/google-login.guard';
 import { LoginGuard } from '../../../../libs/account/src/auth/login.guard';
+import { VerifyEmailDto } from '../../../../libs/account/src/user/email-verification.dto';
 import {
   SignUpDto,
   UpdateUserDto,
@@ -41,18 +42,13 @@ export class UserController {
       );
     }
     const user = await this.userService.create(body);
-    return new Promise((resolve, reject) => {
-      req.login(user, (err) => {
-        if (err) reject(err);
-        resolve(user);
-      });
-    });
+    return user;
   }
 
   @UseGuards(LoginGuard)
   @Post('/sessions')
-  login() {
-    return;
+  login(@Req() req) {
+    return req.user;
   }
 
   @UseGuards(GoogleLoginGuard)
@@ -107,5 +103,11 @@ export class UserController {
     @Body(new ValidationPipe()) body: UpdateUserDto,
   ) {
     return this.userService.update(id, body);
+  }
+
+  @Put('email-verifications/verify')
+  verifyEmail(@Body(new ValidationPipe()) body: VerifyEmailDto) {
+    const { token, userId } = body;
+    return this.userService.verifyEmail(token, userId);
   }
 }

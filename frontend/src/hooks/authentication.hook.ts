@@ -7,10 +7,11 @@ import {
   signupApi,
 } from '../api/authentication.api';
 import { useRoles } from './rbac.hook';
-import { computed, reactive, Ref, watch } from 'vue-demi';
+import { computed, ComputedRef, reactive, Ref, watch } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
 import { useRouter } from '../router';
 import { useClearSocialSession } from './hellojs.hook';
+import { ToastProgrammatic } from 'buefy';
 
 export const useSignup = ({
   name,
@@ -131,13 +132,17 @@ export const useLogout = () => {
 };
 
 export const useAfterAuthRedirection = (
-  isLoginOrSignupSuccess: Ref<boolean>
+  isLoginOrSignupSuccess: Ref<boolean>,
+  emailVerified: ComputedRef<boolean | undefined>
 ) => {
   const router = useRouter();
   const { isLoaded, hasRealtorRole, isFetching } = useRoles();
   const unwatch = watch(
-    [isLoginOrSignupSuccess, isLoaded, isFetching],
-    ([isLoginOrSignupSuccess, isLoaded, isFetching]) => {
+    [isLoginOrSignupSuccess, isLoaded, isFetching, emailVerified],
+    ([isLoginOrSignupSuccess, isLoaded, isFetching, emailVerified]) => {
+      if (emailVerified === false) {
+        return;
+      }
       if (isLoginOrSignupSuccess && isLoaded && !isFetching) {
         unwatch();
         if (hasRealtorRole.value) {

@@ -4,7 +4,11 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-            <b-notification v-if="error" type="is-danger" :closable="false">
+            <b-notification
+              v-if="isUnauthorized"
+              type="is-danger"
+              :closable="false"
+            >
               Invalid email or password
             </b-notification>
             <ValidationObserver v-slot="{ pristine, invalid }" slim>
@@ -86,10 +90,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { useAfterAuthRedirection, useLogin } from '@/hooks/authentication.hook';
 import { useSocialLogin } from '@/hooks/hellojs.hook';
 import { useSome } from '../hooks/util.hook';
+import { AxiosError } from 'axios';
+import { DialogProgrammatic } from 'buefy';
 
 export default defineComponent({
   setup() {
@@ -113,19 +119,38 @@ export default defineComponent({
       isFacebookLoginSuccess,
     } = useSocialLogin();
 
+    const isUnauthorized = computed(
+      () => (error.value as AxiosError)?.response?.data?.statusCode === 401
+    );
+    const isPendingEmailVerification = computed(
+      () =>
+        (error.value as AxiosError)?.response?.data?.statusCode === 403 &&
+        (error.value as AxiosError)?.response?.data?.message?.includes?.(
+          'verify'
+        )
+    );
+    watch(isPendingEmailVerification, (isPendingEmailVerification) => {
+      if (isPendingEmailVerification) {
+        DialogProgrammatic.alert({
+          message: 'This email is pending verification.',
+        });
+      }
+    });
+
     useAfterAuthRedirection(
       useSome(
         isNormalLoginSuccess,
         isGoogleLoginSuccess,
         isFacebookLoginSuccess
-      )
+      ),
+      computed(() => !isPendingEmailVerification.value)
     );
 
     return {
       email,
       password,
       isLoading,
-      error,
+      isUnauthorized,
       mutate,
       googleLogin,
       facebookLogin,

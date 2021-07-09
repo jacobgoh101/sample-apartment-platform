@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import {
   useAfterAuthRedirection,
   useSignup,
@@ -107,14 +107,23 @@ import {
 import { useSome } from '@/hooks/util.hook';
 import { AxiosError } from 'axios';
 import { useSocialLogin } from '../hooks/hellojs.hook';
+import { DialogProgrammatic } from 'buefy';
+import { useRouter } from '../router';
 
 export default defineComponent({
   setup() {
+    const router = useRouter();
     const email = ref<string>('');
     const name = ref<string>('');
     const password = ref<string>('');
 
-    const { isLoading, isSuccess: isSignupSuccess, error, mutate } = useSignup({
+    const {
+      isLoading,
+      isSuccess: isSignupSuccess,
+      error,
+      mutate,
+      data: user,
+    } = useSignup({
       name,
       password,
       email,
@@ -128,12 +137,30 @@ export default defineComponent({
     } = useSocialLogin();
 
     useAfterAuthRedirection(
-      useSome(isSignupSuccess, isGoogleLoginSuccess, isFacebookLoginSuccess)
+      useSome(isSignupSuccess, isGoogleLoginSuccess, isFacebookLoginSuccess),
+      computed(() => user.value?.data?.emailVerified)
     );
 
     const errMsg = computed(() => {
       return (error.value as AxiosError)?.response?.data?.message;
     });
+
+    const isPendingEmailVerification = computed(
+      () => user.value?.data?.emailVerified === false
+    );
+    watch(
+      isPendingEmailVerification,
+      (isPendingEmailVerification) => {
+        if (isPendingEmailVerification) {
+          DialogProgrammatic.alert({
+            message:
+              'A verification link has been sent to your email account. Please click on the link that has just been sent to your email account to verify your email and continue the registration process.',
+          });
+          router.push('/');
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       email,

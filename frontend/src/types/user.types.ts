@@ -4,6 +4,9 @@ export interface User {
   email: string;
   createdAt: string;
   updatedAt: string;
+  emailVerified: boolean;
+  googleAccountId: boolean;
+  facebookAccountId: boolean;
 }
 
 export interface SignupDto {

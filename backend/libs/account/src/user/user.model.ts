@@ -1,5 +1,7 @@
 import { BaseModel } from '../../../config/database/models/base.model';
 import { BCRYPT } from '../../../util/bcrypt.util';
+import { EmailVerificationModel } from './email-verification.model';
+import { Model } from 'objection';
 
 export class UserModel extends BaseModel {
   static tableName = 'users';
@@ -9,6 +11,7 @@ export class UserModel extends BaseModel {
   name: string;
   googleAccountId?: string;
   facebookAccountId?: string;
+  emailVerified: boolean;
 
   $formatJson(json) {
     json = super.$formatJson(json);
@@ -23,4 +26,15 @@ export class UserModel extends BaseModel {
 
     return BCRYPT.comparePassword(password, this.passwordHash);
   }
+
+  static relationMappings = {
+    emailVerifications: {
+      relation: Model.HasManyRelation,
+      modelClass: EmailVerificationModel,
+      join: {
+        from: 'users.id',
+        to: 'email_verifications.userId',
+      },
+    },
+  };
 }

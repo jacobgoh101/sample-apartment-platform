@@ -1,11 +1,12 @@
 import { SessionModel } from '../../../../libs/account/src/auth/session.model';
+import { EmailVerificationModel } from '../../../../libs/account/src/user/email-verification.model';
 import { UserModel } from '../../../../libs/account/src/user/user.model';
 import { ENV } from '../../../../libs/config/env';
 import { Global, Module } from '@nestjs/common';
 import Knex from 'knex';
 import { knexSnakeCaseMappers, Model } from 'objection';
 
-const models = [UserModel, SessionModel];
+const models = [UserModel, SessionModel, EmailVerificationModel];
 
 const modelProviders = models.map((model) => {
   return {

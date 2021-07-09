@@ -4,6 +4,7 @@ import Logout from '../views/Logout.vue';
 import ManageUsers from '../views/ManageUsers.vue';
 import EditUser from '../views/EditUser.vue';
 import Signup from '../views/Signup.vue';
+import VerifyEmail from '../views/VerifyEmail.vue';
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 
@@ -39,6 +40,11 @@ const routes: Array<RouteConfig> = [
     path: '/admin/users/:id',
     name: 'EditUser',
     component: EditUser,
+  },
+  {
+    path: '/email/verify',
+    name: 'VerifyEmail',
+    component: VerifyEmail,
   },
 ];
 
