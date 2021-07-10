@@ -1,7 +1,7 @@
 <template>
   <div class="mt-5 columns">
     <div class="column is-6-desktop is-offset-3-desktop">
-      <ValidationObserver v-slot="{}" slim>
+      <ValidationObserver v-slot="{ invalid }" slim>
         <form class="box" @submit.prevent="handleSubmit">
           <ValidationProvider
             name="Name"
@@ -31,7 +31,11 @@
               <b-input type="email" name="email" v-model.trim="form.email" />
             </b-field>
           </ValidationProvider>
-          <ValidationProvider name="Password" rules="min:6" v-slot="{ errors }">
+          <ValidationProvider
+            name="Password"
+            rules="required|min:6"
+            v-slot="{ errors }"
+          >
             <b-field
               class="mb-3"
               label="New Password"
@@ -77,8 +81,9 @@
               type="submit"
               class="button is-primary"
               :class="{ 'is-loading': isLoading }"
+              :disabled="invalid"
             >
-              Save
+              Create
             </button>
           </b-field>
         </form>
