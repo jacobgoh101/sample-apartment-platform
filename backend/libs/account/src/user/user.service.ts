@@ -1,13 +1,18 @@
+import { ENV } from '../../../config/env';
+import { NotificationService } from '../../../notification/src/notification.service';
 import {
   IPaginationOptions,
   Pagination,
 } from '../../../types/pagination.types';
 import { BCRYPT } from '../../../util/bcrypt.util';
 import { SessionModel } from '../auth/session.model';
+import { EmailVerificationModel } from './email-verification.model';
 import { USER_EVENT } from './user.constant';
 import { SignUpDto, SignupEventDto, UpdateUserDto } from './user.dto';
 import { UserModel } from './user.model';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
+import * as cryptoRandomString from 'crypto-random-string';
 import { EventEmitter2 } from 'eventemitter2';
 import { omit } from 'lodash';
 import { ModelClass } from 'objection';
@@ -19,7 +24,10 @@ export class UserService {
     private readonly userModel: ModelClass<UserModel>,
     @Inject('SessionModel')
     private readonly sessionModel: ModelClass<SessionModel>,
+    @Inject('EmailVerificationModel')
+    private readonly emailVerificationModel: ModelClass<EmailVerificationModel>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(data: SignUpDto) {
@@ -27,25 +35,84 @@ export class UserService {
     const passwordHash = await BCRYPT.hashPassword(password);
     const user = await this.userModel
       .query()
-      .insert({ email, passwordHash, name })
+      .insert({ email, passwordHash, name, emailVerified: false })
       .returning('*');
 
     this.eventEmitter.emit(USER_EVENT.SIGNUP, {
       user,
     } as SignupEventDto);
 
-    // TODO: double check if password is returned
     return user;
   }
 
-  async isEmailUsed({ email }: { email: string }): Promise<boolean> {
-    const emailExist = await this.userModel
+  async createByGoogle(
+    data: Pick<UserModel, 'email' | 'name' | 'googleAccountId'>,
+  ) {
+    const { email, name, googleAccountId } = data;
+
+    if (
+      (await this.userModel.query().where({ googleAccountId }).resultSize()) > 0
+    ) {
+      throw new ConflictException(
+        'This Google account had signed up before. Please Log In.',
+      );
+    }
+
+    const user = await this.userModel
       .query()
-      .where('email', email)
-      .resultSize()
-      .then((c) => c > 0);
-    if (emailExist) return true;
-    return false;
+      .insert({ email, name, googleAccountId, emailVerified: true })
+      .returning('*');
+
+    this.eventEmitter.emit(USER_EVENT.SIGNUP, {
+      user,
+    } as SignupEventDto);
+
+    return user;
+  }
+
+  findByGoogle(googleAccountId: string) {
+    return this.userModel.query().findOne({ googleAccountId });
+  }
+
+  async createByFacebook(
+    data: Pick<UserModel, 'email' | 'name' | 'facebookAccountId'>,
+  ) {
+    const { email, name, facebookAccountId } = data;
+
+    if (
+      (await this.userModel.query().where({ facebookAccountId }).resultSize()) >
+      0
+    ) {
+      throw new ConflictException(
+        'This Facebook account had signed up before. Please Log In.',
+      );
+    }
+
+    const user = await this.userModel
+      .query()
+      .insert({ email, name, facebookAccountId, emailVerified: true })
+      .returning('*');
+
+    this.eventEmitter.emit(USER_EVENT.SIGNUP, {
+      user,
+    } as SignupEventDto);
+
+    return user;
+  }
+
+  findByFacebook(facebookAccountId: string) {
+    return this.userModel.query().findOne({ facebookAccountId });
+  }
+
+  async isEmailUsed({ email }: { email: string }): Promise<boolean> {
+    return (
+      (await this.userModel
+        .query()
+        .where('email', email)
+        .whereNull('googleAccountId')
+        .whereNull('facebookAccountId')
+        .resultSize()) > 0
+    );
   }
 
   async findOneById(id: number) {
@@ -54,6 +121,14 @@ export class UserService {
 
   async findOneByEmail(email: string) {
     return this.userModel.query().findOne({ email });
+  }
+
+  async findOneNonSocialUserByEmail(email: string) {
+    return this.userModel
+      .query()
+      .findOne({ email })
+      .whereNull('googleAccountId')
+      .whereNull('facebookAccountId');
   }
 
   async paginate(options: IPaginationOptions): Promise<Pagination<UserModel>> {
@@ -91,5 +166,57 @@ export class UserService {
       .query()
       .whereRaw(`cast("json"->'passport'->'user'->>'id' as int) = ?`, [userId])
       .delete();
+  }
+
+  async createAndSendEmailVerification(user: UserModel) {
+    const { email, emailVerified, id: userId } = user;
+    if (emailVerified) return;
+
+    const token = cryptoRandomString({ length: 32 });
+    await this.emailVerificationModel.query().insert({
+      email,
+      userId,
+      token,
+    });
+
+    const verificationUrl = `${
+      ENV.FRONTEND_HOSTNAME
+    }/email/verify?token=${encodeURIComponent(token)}&userId=${userId}`;
+
+    this.notificationService.sendEmailVerification({
+      name: user.name,
+      email: user.email,
+      verificationUrl,
+    });
+  }
+
+  async verifyEmail(token: string, userId: number) {
+    const emailVerification = await this.emailVerificationModel
+      .query()
+      .findOne({ token, userId });
+
+    if (!emailVerification || emailVerification.expiredAt < new Date()) {
+      throw new UnauthorizedException('Invalid Token');
+    }
+
+    await emailVerification
+      .$relatedQuery<UserModel>('user')
+      .update({ emailVerified: true });
+
+    if (!emailVerification.verifiedAt)
+      return emailVerification.$query().updateAndFetch({
+        verifiedAt: emailVerification.verifiedAt || new Date(),
+      });
+    return emailVerification;
+  }
+
+  async blockUser(userId: number) {
+    return this.userModel.query().updateAndFetchById(userId, { blocked: true });
+  }
+
+  async unblockUser(userId: number) {
+    return this.userModel
+      .query()
+      .updateAndFetchById(userId, { blocked: false });
   }
 }

@@ -6,16 +6,21 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "commit": "cd .. && npx cz"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
     "@mdi/font": "^5.9.55",
     "@vue/composition-api": "^1.0.0-rc.8",
     "@vueuse/core": "^4.11.0",
     "axios": "^0.21.1",
     "buefy": "^0.9.7",
+    "bulma-divider": "^0.2.0",
+    "bulma-social": "1.1.1",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.4",
+    "hellojs": "^1.19.4",
     "javascript-time-ago": "^2.3.5",
     "lodash": "^4.17.21",
     "query-string": "^7.0.0",
@@ -27,6 +32,7 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@types/hellojs": "^1.16.3",
     "@types/javascript-time-ago": "^2.0.2",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.169",

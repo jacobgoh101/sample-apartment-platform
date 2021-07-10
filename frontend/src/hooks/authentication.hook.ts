@@ -1,13 +1,17 @@
 import {
+  facebookLoginApi,
   getMeApi,
+  googleLoginApi,
   loginApi,
   logoutApi,
   signupApi,
 } from '../api/authentication.api';
 import { useRoles } from './rbac.hook';
-import { computed, reactive, Ref, watch } from 'vue-demi';
+import { computed, ComputedRef, reactive, Ref, watch } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
 import { useRouter } from '../router';
+import { useClearSocialSession } from './hellojs.hook';
+import { ToastProgrammatic } from 'buefy';
 
 export const useSignup = ({
   name,
@@ -59,6 +63,37 @@ export const useLogin = ({
   );
 };
 
+export const useCreateSessionFromGoogleLogin = () => {
+  const { refreshAuth } = useAuth();
+  return useMutation(
+    reactive(['google-login']),
+    (accessToken: string) => {
+      return googleLoginApi({ accessToken });
+    },
+    {
+      retry: false,
+      onSuccess() {
+        refreshAuth();
+      },
+    }
+  );
+};
+export const useCreateSessionFromFacebookLogin = () => {
+  const { refreshAuth } = useAuth();
+  return useMutation(
+    reactive(['facebook-login']),
+    (accessToken: string) => {
+      return facebookLoginApi({ accessToken });
+    },
+    {
+      retry: false,
+      onSuccess() {
+        refreshAuth();
+      },
+    }
+  );
+};
+
 export const useMe = () => {
   return useQuery(
     'get-me',
@@ -87,21 +122,27 @@ export const useAuth = () => {
 
 export const useLogout = () => {
   const { refreshAuth } = useAuth();
+  const { clear } = useClearSocialSession();
   return useMutation('logout', () => logoutApi(), {
     onSuccess() {
+      clear();
       refreshAuth();
     },
   });
 };
 
 export const useAfterAuthRedirection = (
-  isLoginOrSignupSuccess: Ref<boolean>
+  isLoginOrSignupSuccess: Ref<boolean>,
+  emailVerified: ComputedRef<boolean | undefined>
 ) => {
   const router = useRouter();
   const { isLoaded, hasRealtorRole, isFetching } = useRoles();
   const unwatch = watch(
-    [isLoginOrSignupSuccess, isLoaded, isFetching],
-    ([isLoginOrSignupSuccess, isLoaded, isFetching]) => {
+    [isLoginOrSignupSuccess, isLoaded, isFetching, emailVerified],
+    ([isLoginOrSignupSuccess, isLoaded, isFetching, emailVerified]) => {
+      if (emailVerified === false) {
+        return;
+      }
       if (isLoginOrSignupSuccess && isLoaded && !isFetching) {
         unwatch();
         if (hasRealtorRole.value) {

@@ -19,6 +19,7 @@ const config: Knex.Config = {
     directory: './libs/config/database/seeds',
     stub: './libs/config/database/seed.stub',
   },
+  debug: true,
   ...knexSnakeCaseMappers(),
 };
 module.exports = config;

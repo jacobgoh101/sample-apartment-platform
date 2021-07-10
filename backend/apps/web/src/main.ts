@@ -6,11 +6,13 @@ import { NestFactory } from '@nestjs/core';
 import * as session from 'express-session';
 import * as helmet from 'helmet';
 import * as passport from 'passport';
+import * as requestIp from 'request-ip';
 
 async function bootstrap() {
   const app = await NestFactory.create(WebModule);
 
   app.use(helmet());
+  app.use(requestIp.mw());
   app.enableCors({
     origin: [ENV.FRONTEND_HOSTNAME],
     credentials: true,
@@ -23,7 +25,7 @@ async function bootstrap() {
       secret: ENV.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      name: 'review.sid',
+      name: 'apartment.sid',
       cookie: {
         httpOnly: true,
         maxAge: DATE_TIME.ONE_DAY_IN_MILLISECONDS,

@@ -1,5 +1,5 @@
 import { USER_EVENT } from '../../account/src/user/user.constant';
-import { SignupEventDto } from '../../account/src/user/user.dto';
+import { UserModel } from '../../account/src/user/user.model';
 import {
   getResourceId,
   RESOURCE,
@@ -15,7 +15,7 @@ export class RbacEventHandler {
   constructor(private readonly rbacService: RbacService) {}
 
   @OnEvent(USER_EVENT.SIGNUP)
-  async handleUserSignupEvent(payload: SignupEventDto) {
-    return payload;
+  async handleUserSignupEvent({ user }: { user: UserModel }) {
+    return user;
   }
 }

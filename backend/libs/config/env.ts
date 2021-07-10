@@ -21,4 +21,10 @@ export const ENV = {
   isDev: process.env.NODE_ENV === 'development',
   isStaging: process.env.NODE_ENV === 'staging',
   isProd: process.env.NODE_ENV === 'production',
+  GOOGLE_OAUTH2_CLIENT_ID: process.env.GOOGLE_OAUTH2_CLIENT_ID,
+  GOOGLE_OAUTH2_CLIENT_SECRET: process.env.GOOGLE_OAUTH2_CLIENT_SECRET,
+  GITHUB_OAUTH2_CLIENT_ID: process.env.GITHUB_OAUTH2_CLIENT_ID,
+  GITHUB_OAUTH2_CLIENT_SECRET: process.env.GITHUB_OAUTH2_CLIENT_SECRET,
+  MAILGUN_API_KEY: process.env.MAILGUN_API_KEY,
+  MAILGUN_DOMAIN: process.env.MAILGUN_DOMAIN,
 };

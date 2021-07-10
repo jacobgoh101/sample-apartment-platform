@@ -2,7 +2,7 @@ import { SignupDto, User } from '../types/user.types';
 import { $axios } from './axios';
 
 export const signupApi = ({ name, password, email }: SignupDto) =>
-  $axios.post<undefined>('/users', {
+  $axios.post<User>('/users', {
     name,
     password,
     email,
@@ -15,6 +15,12 @@ export const loginApi = ({
   email: string;
   password: string;
 }) => $axios.post<undefined>('/sessions', { email, password });
+
+export const googleLoginApi = ({ accessToken }: { accessToken: string }) =>
+  $axios.post<undefined>('/oauth2/google/sessions', { accessToken });
+
+export const facebookLoginApi = ({ accessToken }: { accessToken: string }) =>
+  $axios.post<undefined>('/oauth2/facebook/sessions', { accessToken });
 
 export const getMeApi = () => $axios.get<User>('/me');
 

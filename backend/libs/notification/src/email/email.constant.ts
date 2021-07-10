@@ -1,0 +1,3 @@
+export enum EMAIL_PROVIDERS {
+  MAILGUN = 'MAILGUN',
+}
