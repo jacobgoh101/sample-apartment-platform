@@ -1,5 +1,5 @@
 import { USER_EVENT } from '../../account/src/user/user.constant';
-import { UpdateUserDto } from '../../account/src/user/user.dto';
+import { CreateUserDto, UpdateUserDto } from '../../account/src/user/user.dto';
 import { UserModel } from '../../account/src/user/user.model';
 import {
   getResourceId,
@@ -37,6 +37,20 @@ export class RbacEventHandler {
         ),
         ...rolesToBeDeleted.map((role) =>
           this.rbacService.deleteRoleForUser(id, role),
+        ),
+      ]);
+    }
+  }
+
+  @OnEvent(USER_EVENT.CREATE)
+  async handleUserCreatedByAdminEvent(body: CreateUserDto & { id: number }) {
+    const id = body.id;
+    if (body.roles) {
+      const rolesToBeAdded = body.roles;
+
+      await Promise.all([
+        ...rolesToBeAdded.map((role) =>
+          this.rbacService.addRolesForUser(id, role),
         ),
       ]);
     }

@@ -27,3 +27,11 @@ export interface UpdateUserDto {
   emailVerified: boolean;
   roles: ROLES[];
 }
+export interface CreateUserDto {
+  name: string;
+  password: string;
+  email: string;
+  blocked: boolean;
+  emailVerified: boolean;
+  roles: ROLES[];
+}

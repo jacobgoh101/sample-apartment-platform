@@ -6,6 +6,7 @@ import {
   VerifyEmailDto,
 } from '../../../../libs/account/src/user/email-verification.dto';
 import {
+  CreateUserDto,
   SignUpDto,
   UpdateUserDto,
 } from '../../../../libs/account/src/user/user.dto';
@@ -35,7 +36,7 @@ import {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/users')
+  @Post('/users/register')
   async signUp(@Body(new ValidationPipe()) body: SignUpDto, @Req() req) {
     const isEmailUsed = await this.userService.isEmailUsed({
       email: body.email,
@@ -45,7 +46,7 @@ export class UserController {
         'Email is already used by an existing account.',
       );
     }
-    const user = await this.userService.create(body);
+    const user = await this.userService.signup(body);
     return user;
   }
 
@@ -126,5 +127,12 @@ export class UserController {
     @Body(new ValidationPipe()) body: UpdateUserDto,
   ) {
     return this.userService.update(id, body);
+  }
+
+  @Roles(ROLES.ADMIN)
+  @UseGuards(RolesGuard)
+  @Post('users')
+  createUsers(@Body(new ValidationPipe()) body: CreateUserDto) {
+    return this.userService.create(body);
   }
 }

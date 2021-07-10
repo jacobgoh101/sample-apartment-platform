@@ -3,13 +3,14 @@ import { ToRefs, reactive, watch, Ref } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
 import { UseQueryOptions } from 'react-query';
 import {
+  createUserApi,
   deleteUserApi,
   findUserByIdApi,
   getUsersApi,
   updateUserApi,
 } from '../api/user.api';
 import { createEventHook } from '@vueuse/core';
-import { UpdateUserDto, User } from '../types/user.types';
+import { CreateUserDto, UpdateUserDto, User } from '../types/user.types';
 import { AxiosResponse } from 'axios';
 import { pickBy } from 'lodash';
 
@@ -62,6 +63,12 @@ export const useUpdateUser = () => {
       return updateUserApi(id, body);
     }
   );
+};
+
+export const useCreateUser = () => {
+  return useMutation('create-user', (body: CreateUserDto) => {
+    return createUserApi(body);
+  });
 };
 
 export const useFindUserById = (

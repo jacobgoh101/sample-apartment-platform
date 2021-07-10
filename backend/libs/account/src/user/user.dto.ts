@@ -59,3 +59,28 @@ export class UpdateUserDto {
   @IsEnum(ROLES, { each: true })
   roles: ROLES[];
 }
+
+export class CreateUserDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(3)
+  @MaxLength(500)
+  name: string;
+
+  @IsString()
+  @MinLength(6)
+  @MaxLength(64)
+  password: string;
+
+  @IsBoolean()
+  blocked: string;
+
+  @IsBoolean()
+  emailVerified: string;
+
+  @IsEnum(ROLES, { each: true })
+  roles: ROLES[];
+}

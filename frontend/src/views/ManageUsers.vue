@@ -1,6 +1,17 @@
 <template>
-  <div class="mt-5">
-    <div class="pt-5" />
+  <div class="">
+    <div class="is-flex is-justify-content-flex-end mb-5">
+      <b-button
+        type="is-primary"
+        icon-left="plus"
+        tag="router-link"
+        :to="{
+          name: 'CreateUser',
+        }"
+      >
+        Create New User
+      </b-button>
+    </div>
     <b-table :data="items">
       <template #empty>
         <div class="has-text-centered m-5 p-5">No records</div>
@@ -23,11 +34,11 @@
         label="Email Verified"
         v-slot="{ row }"
       >
-        <b-checkbox :value="row.emailVerified" />
+        <b-checkbox disabled :value="row.emailVerified" />
       </b-table-column>
 
       <b-table-column field="blocked" label="Blocked" v-slot="{ row }">
-        <b-checkbox :value="row.blocked" />
+        <b-checkbox disabled :value="row.blocked" />
       </b-table-column>
 
       <b-table-column field="type" label="Signup Type" v-slot="{ row }">
