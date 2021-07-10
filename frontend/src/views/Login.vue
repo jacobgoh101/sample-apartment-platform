@@ -122,18 +122,32 @@ export default defineComponent({
     const isUnauthorized = computed(
       () => (error.value as AxiosError)?.response?.data?.statusCode === 401
     );
-    const isPendingEmailVerification = computed(
-      () =>
-        (error.value as AxiosError)?.response?.data?.statusCode === 403 &&
-        (error.value as AxiosError)?.response?.data?.message?.includes?.(
-          'verify'
-        )
-    );
+    const isPendingEmailVerification = computed(() => {
+      const data = (error.value as AxiosError)?.response?.data;
+      return (
+        data?.statusCode === 403 &&
+        data?.message?.includes?.('verify') &&
+        data?.message?.includes?.('email')
+      );
+    });
     watch(isPendingEmailVerification, (isPendingEmailVerification) => {
       if (isPendingEmailVerification) {
         DialogProgrammatic.alert({
           message:
             'This email is pending verification. Please check your inbox.',
+        });
+      }
+    });
+    const isBlockedAccount = computed(() => {
+      const data = (error.value as AxiosError)?.response?.data;
+      return data?.statusCode === 403 && data?.message?.includes?.('suspended');
+    });
+    watch(isBlockedAccount, (isBlockedAccount) => {
+      if (isBlockedAccount) {
+        DialogProgrammatic.alert({
+          message:
+            (error.value as AxiosError)?.response?.data?.message ||
+            'Your account has been temporary suspended due to suspicious activity. Please contact support@apartmentrental.com ',
         });
       }
     });

@@ -1,6 +1,15 @@
+import { FailedLoginAttemptModel } from '../user/failed-login-attempts.model';
 import { UserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
-import { HttpService, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpService,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import * as dayjs from 'dayjs';
+import { ModelClass } from 'objection';
 
 export interface GoogleVerificationResult {
   sub: string;
@@ -24,17 +33,58 @@ export interface FacebookVerificationResult {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UserService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
+    @Inject('FailedLoginAttemptModel')
+    private readonly failedLoginAttemptModel: ModelClass<FailedLoginAttemptModel>,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<UserModel | null> {
-    const user = await this.usersService.findOneNonSocialUserByEmail(email);
+  async validateUser(
+    email: string,
+    pass: string,
+    ipAddress: string,
+  ): Promise<UserModel | null> {
+    const user = await this.userService.findOneNonSocialUserByEmail(email);
+    if (user.blocked) {
+      throw new ForbiddenException(
+        'Your account has been temporary suspended due to suspicious activity. Please contact support@apartmentrental.com ',
+      );
+    }
     const isValid = await user?.comparePassword(pass);
     if (isValid) {
+      if (!user.emailVerified) {
+        this.userService.createAndSendEmailVerification(user);
+        throw new ForbiddenException('Please verify your email address');
+      }
       return user;
     }
-    return null;
+    await this.logLoginFailedAttempt(user, ipAddress);
+    await this.blockUserIfNeeded(user);
+    throw new UnauthorizedException();
+  }
+
+  async logLoginFailedAttempt(user: UserModel, ipAddress: string) {
+    await this.failedLoginAttemptModel
+      .query()
+      .insert({
+        userId: user?.id,
+        ipAddress,
+      })
+      .returning('*');
+  }
+
+  async blockUserIfNeeded(user: UserModel) {
+    const failedAttemptCount = await this.failedLoginAttemptModel
+      .query()
+      .where('userId', user?.id)
+      // failed attempts within the past 5 minutes
+      .where('createdAt', '>', dayjs().subtract(5, 'minute').toDate())
+      .resultSize();
+    const shouldBlock = failedAttemptCount >= 3;
+    if (shouldBlock) {
+      return await this.userService.blockUser(user?.id);
+    }
+    return user;
   }
 
   async validateGoogleAccessToken(

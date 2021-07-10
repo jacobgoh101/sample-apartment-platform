@@ -209,4 +209,14 @@ export class UserService {
       });
     return emailVerification;
   }
+
+  async blockUser(userId: number) {
+    return this.userModel.query().updateAndFetchById(userId, { blocked: true });
+  }
+
+  async unblockUser(userId: number) {
+    return this.userModel
+      .query()
+      .updateAndFetchById(userId, { blocked: false });
+  }
 }
