@@ -1,3 +1,4 @@
+import { ROLES } from '../../../rbac/src/rbac.constant';
 import { UserModel } from './user.model';
 import {
   IsString,
@@ -7,6 +8,7 @@ import {
   IsDefined,
   IsOptional,
   IsBoolean,
+  IsEnum,
 } from 'class-validator';
 
 export class SignUpDto {
@@ -53,4 +55,7 @@ export class UpdateUserDto {
 
   @IsBoolean()
   emailVerified: string;
+
+  @IsEnum(ROLES, { each: true })
+  roles: ROLES[];
 }

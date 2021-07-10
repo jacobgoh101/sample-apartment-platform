@@ -36,6 +36,10 @@
         <span v-else>Email &amp; Password</span>
       </b-table-column>
 
+      <b-table-column field="roles" label="Roles" v-slot="{ row }">
+        {{ Array.isArray(row.roles) && row.roles.join(', ') }}
+      </b-table-column>
+
       <b-table-column label="Action" v-slot="{ row: { id } }">
         <div class="buttons">
           <b-button

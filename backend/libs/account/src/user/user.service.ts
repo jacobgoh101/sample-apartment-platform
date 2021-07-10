@@ -116,7 +116,7 @@ export class UserService {
   }
 
   async findOneById(id: number) {
-    return this.userModel.query().findById(id);
+    return this.userModel.query().findById(id).withGraphJoined('roles');
   }
 
   async findOneByEmail(email: string) {
@@ -135,6 +135,7 @@ export class UserService {
     const { page, limit } = options;
     const { results, total } = await this.userModel
       .query()
+      .withGraphJoined('roles')
       .orderBy('id', 'DESC')
       .page(+page - 1, +limit);
     return {
@@ -159,6 +160,9 @@ export class UserService {
       : undefined;
     if (body.password) this.deleteUserSessions(id);
     const trimmedBody = omit(body, 'password');
+
+    await this.eventEmitter.emitAsync(USER_EVENT.UPDATE, { id, ...body });
+
     return this.userModel
       .query()
       .updateAndFetchById(id, { ...trimmedBody, passwordHash });

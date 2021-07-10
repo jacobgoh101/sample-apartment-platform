@@ -53,18 +53,31 @@
           <br />
           <div class="columns">
             <div class="column">
-              <b-field class="mb-3">
+              <b-field>
                 <b-checkbox v-model="form.blocked"> Blocked </b-checkbox>
               </b-field>
             </div>
             <div class="column">
-              <b-field class="mb-3">
+              <b-field>
                 <b-checkbox v-model="form.emailVerified">
                   Email Verified
                 </b-checkbox>
               </b-field>
             </div>
           </div>
+          <b-field class="mb-5" label="Roles">
+            <div class="columns">
+              <div
+                class="column"
+                v-for="role in Object.values(ROLES)"
+                :key="role"
+              >
+                <b-checkbox v-model="form.roles" :native-value="role">
+                  {{ role }}
+                </b-checkbox>
+              </div>
+            </div>
+          </b-field>
           <b-field label="Account Type" class="mb-3">
             {{ accountType }}
           </b-field>
@@ -93,6 +106,7 @@ import {
 import { useAdminGuard, useRoute } from '@/hooks/route.hook.ts';
 import { useErrorNitofication } from '@/hooks/error.hook.ts';
 import { UpdateUserDto } from '../types/user.types';
+import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
 import { useFindUserById, useUpdateUser } from '../hooks/user.hook';
@@ -112,6 +126,7 @@ export default defineComponent({
       email: '',
       emailVerified: false,
       blocked: false,
+      roles: [],
     });
 
     const setInitialFormValue = once(() => {
@@ -121,6 +136,7 @@ export default defineComponent({
       form.email = user.email;
       form.emailVerified = user.emailVerified;
       form.blocked = user.blocked;
+      form.roles = user.roles || [];
     });
     watch(userData, () => {
       if (userData.value?.data) {
@@ -159,6 +175,7 @@ export default defineComponent({
         () => (error.value as AxiosError)?.response?.data?.message
       ),
       isFetchingUser,
+      ROLES,
     };
   },
 });

@@ -1,3 +1,5 @@
+import { ROLES } from './roles.types';
+
 export interface User {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export interface User {
   blocked: boolean;
   googleAccountId: boolean;
   facebookAccountId: boolean;
+  roles?: ROLES[];
 }
 
 export interface SignupDto {
@@ -22,4 +25,5 @@ export interface UpdateUserDto {
   email: string;
   blocked: boolean;
   emailVerified: boolean;
+  roles: ROLES[];
 }
