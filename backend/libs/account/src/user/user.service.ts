@@ -8,7 +8,12 @@ import { BCRYPT } from '../../../util/bcrypt.util';
 import { SessionModel } from '../auth/session.model';
 import { EmailVerificationModel } from './email-verification.model';
 import { USER_EVENT } from './user.constant';
-import { SignUpDto, SignupEventDto, UpdateUserDto } from './user.dto';
+import {
+  CreateUserDto,
+  SignUpDto,
+  SignupEventDto,
+  UpdateUserDto,
+} from './user.dto';
 import { UserModel } from './user.model';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConflictException } from '@nestjs/common';
@@ -30,7 +35,7 @@ export class UserService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  async create(data: SignUpDto) {
+  async signup(data: SignUpDto) {
     const { email, name, password } = data;
     const passwordHash = await BCRYPT.hashPassword(password);
     const user = await this.userModel
@@ -116,7 +121,7 @@ export class UserService {
   }
 
   async findOneById(id: number) {
-    return this.userModel.query().findById(id);
+    return this.userModel.query().findById(id).withGraphFetched('roles');
   }
 
   async findOneByEmail(email: string) {
@@ -133,7 +138,11 @@ export class UserService {
 
   async paginate(options: IPaginationOptions): Promise<Pagination<UserModel>> {
     const { page, limit } = options;
-    const { results, total } = await this.userModel.query().page(+page, +limit);
+    const { results, total } = await this.userModel
+      .query()
+      .withGraphFetched('roles')
+      .orderBy('id', 'DESC')
+      .page(+page - 1, +limit);
     return {
       items: results,
       meta: {
@@ -156,9 +165,31 @@ export class UserService {
       : undefined;
     if (body.password) this.deleteUserSessions(id);
     const trimmedBody = omit(body, 'password');
+
+    await this.eventEmitter.emitAsync(USER_EVENT.UPDATE, { id, ...body });
+
     return this.userModel
       .query()
       .updateAndFetchById(id, { ...trimmedBody, passwordHash });
+  }
+
+  async create(body: CreateUserDto) {
+    const passwordHash = body.password
+      ? await BCRYPT.hashPassword(body.password)
+      : undefined;
+    const trimmedBody = omit(body, 'password');
+
+    const user = await this.userModel
+      .query()
+      .insert({ ...trimmedBody, passwordHash })
+      .returning('*');
+
+    await this.eventEmitter.emitAsync(USER_EVENT.CREATE, {
+      ...body,
+      id: user?.id,
+    });
+
+    return user;
   }
 
   async deleteUserSessions(userId: number) {

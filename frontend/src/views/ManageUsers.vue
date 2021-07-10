@@ -1,6 +1,17 @@
 <template>
-  <div class="mt-5">
-    <div class="pt-5" />
+  <div class="">
+    <div class="is-flex is-justify-content-flex-end mb-5">
+      <b-button
+        type="is-primary"
+        icon-left="plus"
+        tag="router-link"
+        :to="{
+          name: 'CreateUser',
+        }"
+      >
+        Create New User
+      </b-button>
+    </div>
     <b-table :data="items">
       <template #empty>
         <div class="has-text-centered m-5 p-5">No records</div>
@@ -16,6 +27,28 @@
 
       <b-table-column field="email" label="Email" v-slot="{ row }">
         {{ row.email }}
+      </b-table-column>
+
+      <b-table-column
+        field="emailVerified"
+        label="Email Verified"
+        v-slot="{ row }"
+      >
+        <b-checkbox disabled :value="row.emailVerified" />
+      </b-table-column>
+
+      <b-table-column field="blocked" label="Blocked" v-slot="{ row }">
+        <b-checkbox disabled :value="row.blocked" />
+      </b-table-column>
+
+      <b-table-column field="type" label="Signup Type" v-slot="{ row }">
+        <span v-if="row.googleAccountId">Google</span>
+        <span v-else-if="row.facebookAccountId">Facebook</span>
+        <span v-else>Email &amp; Password</span>
+      </b-table-column>
+
+      <b-table-column field="roles" label="Roles" v-slot="{ row }">
+        {{ Array.isArray(row.roles) && row.roles.join(', ') }}
       </b-table-column>
 
       <b-table-column label="Action" v-slot="{ row: { id } }">

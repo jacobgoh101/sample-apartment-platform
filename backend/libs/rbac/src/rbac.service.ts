@@ -15,14 +15,21 @@ export class RbacService {
 
     // admin can assume all realtor roles
     await this.enforcer.addGroupingPolicy(ROLES.ADMIN, ROLES.REALTOR);
+    await this.enforcer.addGroupingPolicy(ROLES.ADMIN, ROLES.CLIENT);
   }
 
   addRolesForUser(userId: number, role: ROLES) {
     return this.enforcer.addRoleForUser(userId?.toString(), role);
   }
 
+  deleteRoleForUser(userId: number, role: ROLES) {
+    return this.enforcer.deleteRoleForUser(userId?.toString(), role);
+  }
+
   getRolesForUser(userId: number) {
-    return this.enforcer.getRolesForUser(userId?.toString());
+    return this.enforcer
+      .getRolesForUser(userId?.toString())
+      .then((arr) => arr as ROLES[]);
   }
 
   async hasRolesForUser(userId: number, requiredRoles: ROLES[]) {

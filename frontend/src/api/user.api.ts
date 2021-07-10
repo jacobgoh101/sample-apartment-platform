@@ -1,5 +1,5 @@
 import { PagingOption, PagingResult } from '../types/pagination.types';
-import { UpdateUserDto, User } from '../types/user.types';
+import { CreateUserDto, UpdateUserDto, User } from '../types/user.types';
 import { $axios } from './axios';
 
 export const getUsersApi = ({ page, limit }: PagingOption) =>
@@ -12,5 +12,8 @@ export const deleteUserApi = (id: number) =>
 
 export const updateUserApi = (id: number, body: UpdateUserDto) =>
   $axios.put<User>('/users/' + id, body);
+
+export const createUserApi = (body: CreateUserDto) =>
+  $axios.post<User>('/users', body);
 
 export const findUserByIdApi = (id: number) => $axios.get<User>('/users/' + id);

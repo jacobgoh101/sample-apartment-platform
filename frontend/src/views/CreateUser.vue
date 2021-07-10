@@ -1,8 +1,7 @@
 <template>
   <div class="mt-5 columns">
-    <b-loading is-full-page :active="isFetchingUser" />
     <div class="column is-6-desktop is-offset-3-desktop">
-      <ValidationObserver v-slot="{}" slim>
+      <ValidationObserver v-slot="{ invalid }" slim>
         <form class="box" @submit.prevent="handleSubmit">
           <ValidationProvider
             name="Name"
@@ -34,9 +33,8 @@
           </ValidationProvider>
           <ValidationProvider
             name="Password"
-            rules="min:6"
+            rules="required|min:6"
             v-slot="{ errors }"
-            v-if="accountType.includes('Password')"
           >
             <b-field
               class="mb-3"
@@ -78,16 +76,14 @@
               </div>
             </div>
           </b-field>
-          <b-field label="Account Type" class="mb-3">
-            {{ accountType }}
-          </b-field>
           <b-field class="mt-5 is-flex is-justify-content-flex-end">
             <button
               type="submit"
               class="button is-primary"
               :class="{ 'is-loading': isLoading }"
+              :disabled="invalid"
             >
-              Save
+              Create
             </button>
           </b-field>
         </form>
@@ -103,48 +99,28 @@ import {
   reactive,
   watch,
 } from '@vue/composition-api';
-import { useAdminGuard, useRoute } from '@/hooks/route.hook.ts';
+import { useAdminGuard } from '@/hooks/route.hook.ts';
 import { useErrorNitofication } from '@/hooks/error.hook.ts';
-import { UpdateUserDto } from '../types/user.types';
+import { CreateUserDto } from '../types/user.types';
 import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
-import { useFindUserById, useUpdateUser } from '../hooks/user.hook';
-import { once } from 'lodash';
+import { useCreateUser } from '../hooks/user.hook';
 
 export default defineComponent({
   setup() {
     useAdminGuard();
 
-    const route = useRoute();
-    const id = computed(() => +route.params?.id);
-    const { data: userData, isFetching: isFetchingUser } = useFindUserById(id);
-
-    const form = reactive<UpdateUserDto>({
+    const form = reactive<CreateUserDto>({
       name: '',
       password: '',
       email: '',
-      emailVerified: false,
+      emailVerified: true,
       blocked: false,
       roles: [],
     });
 
-    const setInitialFormValue = once(() => {
-      const user = userData.value?.data;
-      if (!user) return;
-      form.name = user.name;
-      form.email = user.email;
-      form.emailVerified = user.emailVerified;
-      form.blocked = user.blocked;
-      form.roles = user.roles || [];
-    });
-    watch(userData, () => {
-      if (userData.value?.data) {
-        setInitialFormValue();
-      }
-    });
-
-    const { isSuccess, isLoading, error, mutate } = useUpdateUser();
+    const { isSuccess, isLoading, error, mutate } = useCreateUser();
 
     const router = useRouter();
 
@@ -154,27 +130,17 @@ export default defineComponent({
       if (isSuccess) router.push({ name: 'ManageUsers' });
     });
 
-    const accountType = computed(() =>
-      userData.value?.data?.googleAccountId
-        ? 'Google'
-        : userData.value?.data?.facebookAccountId
-        ? 'Facebook'
-        : 'Email & Password'
-    );
-
     return {
       form,
-      accountType,
       mutate,
       handleSubmit() {
-        mutate({ id: id.value, body: form });
+        mutate(form);
       },
       isLoading,
       error,
       errorMsg: computed(
         () => (error.value as AxiosError)?.response?.data?.message
       ),
-      isFetchingUser,
       ROLES,
     };
   },

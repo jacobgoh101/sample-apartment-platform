@@ -1,11 +1,14 @@
+import { ROLES } from '../../../rbac/src/rbac.constant';
 import { UserModel } from './user.model';
 import {
   IsString,
   MinLength,
   MaxLength,
   IsEmail,
-  IsBoolean,
   IsDefined,
+  IsOptional,
+  IsBoolean,
+  IsEnum,
 } from 'class-validator';
 
 export class SignUpDto {
@@ -44,5 +47,40 @@ export class UpdateUserDto {
   @IsString()
   @MinLength(6)
   @MaxLength(64)
+  @IsOptional()
   password: string;
+
+  @IsBoolean()
+  blocked: string;
+
+  @IsBoolean()
+  emailVerified: string;
+
+  @IsEnum(ROLES, { each: true })
+  roles: ROLES[];
+}
+
+export class CreateUserDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(3)
+  @MaxLength(500)
+  name: string;
+
+  @IsString()
+  @MinLength(6)
+  @MaxLength(64)
+  password: string;
+
+  @IsBoolean()
+  blocked: string;
+
+  @IsBoolean()
+  emailVerified: string;
+
+  @IsEnum(ROLES, { each: true })
+  roles: ROLES[];
 }

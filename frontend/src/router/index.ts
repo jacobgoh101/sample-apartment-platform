@@ -3,6 +3,7 @@ import Login from '../views/Login.vue';
 import Logout from '../views/Logout.vue';
 import ManageUsers from '../views/ManageUsers.vue';
 import EditUser from '../views/EditUser.vue';
+import CreateUser from '../views/CreateUser.vue';
 import Signup from '../views/Signup.vue';
 import VerifyEmail from '../views/VerifyEmail.vue';
 import Vue from 'vue';
@@ -35,6 +36,11 @@ const routes: Array<RouteConfig> = [
     path: '/admin/users/managements',
     name: 'ManageUsers',
     component: ManageUsers,
+  },
+  {
+    path: '/admin/users/new',
+    name: 'CreateUser',
+    component: CreateUser,
   },
   {
     path: '/admin/users/:id',

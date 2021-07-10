@@ -29,7 +29,7 @@ describe('UserService', () => {
   });
 
   it('can create user', async () => {
-    const user = await service.create(mockSignUpDto);
+    const user = await service.signup(mockSignUpDto);
     expect(user).toBeDefined();
     expect(user.id).toBeDefined();
     //@ts-ignore
