@@ -23,6 +23,12 @@
       ],
       "@app/rbac/*": [
         "libs/rbac/src/*"
+      ],
+      "@app/notification": [
+        "libs/notification/src"
+      ],
+      "@app/notification/*": [
+        "libs/notification/src/*"
       ]
     }
   }

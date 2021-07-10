@@ -1,4 +1,5 @@
 import { ENV } from '../../../config/env';
+import { NotificationService } from '../../../notification/src/notification.service';
 import {
   IPaginationOptions,
   Pagination,
@@ -31,6 +32,7 @@ export class UserService {
     @Inject('EmailVerificationModel')
     private readonly emailVerificationModel: ModelClass<EmailVerificationModel>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(data: SignUpDto) {
@@ -186,9 +188,11 @@ export class UserService {
       ENV.FRONTEND_HOSTNAME
     }/email/verify?token=${encodeURIComponent(token)}&userId=${userId}`;
 
-    Logger.log({ verificationUrl });
-
-    // TODO: notify user in email
+    this.notificationService.sendEmailVerification({
+      name: user.name,
+      email: user.email,
+      verificationUrl,
+    });
   }
 
   async verifyEmail(token: string, userId: number) {

@@ -36,6 +36,7 @@
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.6.13",
     "@willsoto/casbin-objection-adapter": "^0.2.2",
+    "async-retry-decorator": "^1.8.0",
     "bcryptjs": "^2.4.3",
     "casbin": "^5.6.3",
     "class-transformer": "^0.4.0",
@@ -47,6 +48,7 @@
     "helmet": "^4.4.1",
     "knex": "^0.95.6",
     "luxon": "^1.26.0",
+    "mailgun-js": "^0.22.0",
     "objection": "^2.2.15",
     "passport": "^0.4.1",
     "passport-custom": "^1.1.1",
@@ -68,6 +70,7 @@
     "@types/express-session": "^1.17.3",
     "@types/jest": "^26.0.20",
     "@types/luxon": "^1.26.2",
+    "@types/mailgun-js": "^0.22.12",
     "@types/node": "^14.14.31",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
@@ -108,7 +111,9 @@
       "@app/account/(.*)": "<rootDir>/libs/account/src/$1",
       "@app/account": "<rootDir>/libs/account/src",
       "@app/rbac/(.*)": "<rootDir>/libs/rbac/src/$1",
-      "@app/rbac": "<rootDir>/libs/rbac/src"
+      "@app/rbac": "<rootDir>/libs/rbac/src",
+      "@app/notification/(.*)": "<rootDir>/libs/notification/src/$1",
+      "@app/notification": "<rootDir>/libs/notification/src"
     },
     "setupFiles": [
       "./jest-setup-file.ts"

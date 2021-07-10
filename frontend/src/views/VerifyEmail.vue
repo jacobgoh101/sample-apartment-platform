@@ -9,7 +9,7 @@ import { defineComponent, onBeforeMount, watch } from '@vue/composition-api';
 import NA from '../components/NA.vue';
 import { useRoute } from '../hooks/route.hook';
 import { useVerifyEmail } from '../hooks/email-verification.hook';
-import { DialogProgrammatic, ToastProgrammatic } from 'buefy';
+import { DialogProgrammatic } from 'buefy';
 import { useRouter } from '../router';
 
 export default defineComponent({
@@ -29,7 +29,7 @@ export default defineComponent({
 
     watch(isSuccess, (isSuccess) => {
       if (isSuccess) {
-        ToastProgrammatic.open({
+        DialogProgrammatic.alert({
           type: 'is-success',
           message: 'Email Verified Successfully. You may now log in.',
         });

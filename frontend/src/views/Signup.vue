@@ -19,7 +19,7 @@
                     :type="errors[0] && 'is-danger'"
                     :message="errors[0]"
                   >
-                    <b-input type="email" v-model.trim="email" />
+                    <b-input type="email" name="email" v-model.trim="email" />
                   </b-field>
                 </ValidationProvider>
                 <ValidationProvider
