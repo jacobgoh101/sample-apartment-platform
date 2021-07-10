@@ -1,6 +1,7 @@
 import { PagingOption } from '../types/pagination.types';
 import { ToRefs, reactive, watch, Ref } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
+import { UseQueryOptions } from 'react-query';
 import {
   deleteUserApi,
   findUserByIdApi,
@@ -8,7 +9,9 @@ import {
   updateUserApi,
 } from '../api/user.api';
 import { createEventHook } from '@vueuse/core';
-import { UpdateUserDto } from '../types/user.types';
+import { UpdateUserDto, User } from '../types/user.types';
+import { AxiosResponse } from 'axios';
+import { pickBy } from 'lodash';
 
 export const useUsers = ({ limit, page }: ToRefs<PagingOption>) => {
   return useQuery(reactive(['get-user', limit, page]), () =>
@@ -54,13 +57,20 @@ export const useDeleteUserHandler = () => {
 export const useUpdateUser = () => {
   return useMutation(
     'update-user',
-    ({ id, body }: { id: number; body: UpdateUserDto }) =>
-      updateUserApi(id, body)
+    ({ id, body }: { id: number; body: UpdateUserDto }) => {
+      if (!body.password) delete body.password;
+      return updateUserApi(id, body);
+    }
   );
 };
 
-export const useFindUserById = (id: Ref<number>) => {
-  return useQuery(reactive(['find-user-by-id', id]), () =>
-    findUserByIdApi(id.value)
+export const useFindUserById = (
+  id: Ref<number>,
+  options?: UseQueryOptions<AxiosResponse<User>>
+) => {
+  return useQuery(
+    reactive(['find-user-by-id', id]),
+    () => findUserByIdApi(id.value),
+    options
   );
 };

@@ -4,8 +4,9 @@ import {
   MinLength,
   MaxLength,
   IsEmail,
-  IsBoolean,
   IsDefined,
+  IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class SignUpDto {
@@ -44,5 +45,12 @@ export class UpdateUserDto {
   @IsString()
   @MinLength(6)
   @MaxLength(64)
+  @IsOptional()
   password: string;
+
+  @IsBoolean()
+  blocked: string;
+
+  @IsBoolean()
+  emailVerified: string;
 }

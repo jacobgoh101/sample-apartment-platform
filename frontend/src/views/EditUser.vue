@@ -29,23 +29,45 @@
               :type="errors[0] && 'is-danger'"
               :message="errors[0]"
             >
-              <b-input type="email" v-model.trim="form.email" />
+              <b-input type="email" name="email" v-model.trim="form.email" />
             </b-field>
           </ValidationProvider>
           <ValidationProvider
             name="Password"
-            rules="required|min:6"
+            rules="min:6"
             v-slot="{ errors }"
+            v-if="accountType.includes('Password')"
           >
             <b-field
               class="mb-3"
               label="New Password"
               :type="errors[0] && 'is-danger'"
-              :message="errors[0]"
+              :message="
+                errors[0] ||
+                'Leave it empty to if you aren\'t changing the password.'
+              "
             >
               <b-input type="password" v-model="form.password" />
             </b-field>
           </ValidationProvider>
+          <br />
+          <div class="columns">
+            <div class="column">
+              <b-field class="mb-3">
+                <b-checkbox v-model="form.blocked"> Blocked </b-checkbox>
+              </b-field>
+            </div>
+            <div class="column">
+              <b-field class="mb-3">
+                <b-checkbox v-model="form.emailVerified">
+                  Email Verified
+                </b-checkbox>
+              </b-field>
+            </div>
+          </div>
+          <b-field label="Account Type" class="mb-3">
+            {{ accountType }}
+          </b-field>
           <b-field class="mt-5 is-flex is-justify-content-flex-end">
             <button
               type="submit"
@@ -74,6 +96,7 @@ import { UpdateUserDto } from '../types/user.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
 import { useFindUserById, useUpdateUser } from '../hooks/user.hook';
+import { once } from 'lodash';
 
 export default defineComponent({
   setup() {
@@ -87,13 +110,21 @@ export default defineComponent({
       name: '',
       password: '',
       email: '',
+      emailVerified: false,
+      blocked: false,
     });
 
-    watch(userData, () => {
+    const setInitialFormValue = once(() => {
       const user = userData.value?.data;
+      if (!user) return;
+      form.name = user.name;
+      form.email = user.email;
+      form.emailVerified = user.emailVerified;
+      form.blocked = user.blocked;
+    });
+    watch(userData, () => {
       if (userData.value?.data) {
-        form.name = user?.name || form.name;
-        form.email = user?.email || form.email;
+        setInitialFormValue();
       }
     });
 
@@ -107,8 +138,17 @@ export default defineComponent({
       if (isSuccess) router.push({ name: 'ManageUsers' });
     });
 
+    const accountType = computed(() =>
+      userData.value?.data?.googleAccountId
+        ? 'Google'
+        : userData.value?.data?.facebookAccountId
+        ? 'Facebook'
+        : 'Email & Password'
+    );
+
     return {
       form,
+      accountType,
       mutate,
       handleSubmit() {
         mutate({ id: id.value, body: form });

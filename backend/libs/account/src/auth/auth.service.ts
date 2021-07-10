@@ -45,7 +45,7 @@ export class AuthService {
     ipAddress: string,
   ): Promise<UserModel | null> {
     const user = await this.userService.findOneNonSocialUserByEmail(email);
-    if (user.blocked) {
+    if (user?.blocked) {
       throw new ForbiddenException(
         'Your account has been temporary suspended due to suspicious activity. Please contact support@apartmentrental.com ',
       );
@@ -64,6 +64,7 @@ export class AuthService {
   }
 
   async logLoginFailedAttempt(user: UserModel, ipAddress: string) {
+    if (!user) return;
     await this.failedLoginAttemptModel
       .query()
       .insert({
@@ -74,6 +75,7 @@ export class AuthService {
   }
 
   async blockUserIfNeeded(user: UserModel) {
+    if (!user) return;
     const failedAttemptCount = await this.failedLoginAttemptModel
       .query()
       .where('userId', user?.id)

@@ -18,6 +18,24 @@
         {{ row.email }}
       </b-table-column>
 
+      <b-table-column
+        field="emailVerified"
+        label="Email Verified"
+        v-slot="{ row }"
+      >
+        <b-checkbox :value="row.emailVerified" />
+      </b-table-column>
+
+      <b-table-column field="blocked" label="Blocked" v-slot="{ row }">
+        <b-checkbox :value="row.blocked" />
+      </b-table-column>
+
+      <b-table-column field="type" label="Signup Type" v-slot="{ row }">
+        <span v-if="row.googleAccountId">Google</span>
+        <span v-else-if="row.facebookAccountId">Facebook</span>
+        <span v-else>Email &amp; Password</span>
+      </b-table-column>
+
       <b-table-column label="Action" v-slot="{ row: { id } }">
         <div class="buttons">
           <b-button

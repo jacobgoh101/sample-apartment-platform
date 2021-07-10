@@ -133,7 +133,10 @@ export class UserService {
 
   async paginate(options: IPaginationOptions): Promise<Pagination<UserModel>> {
     const { page, limit } = options;
-    const { results, total } = await this.userModel.query().page(+page, +limit);
+    const { results, total } = await this.userModel
+      .query()
+      .orderBy('id', 'DESC')
+      .page(+page - 1, +limit);
     return {
       items: results,
       meta: {
