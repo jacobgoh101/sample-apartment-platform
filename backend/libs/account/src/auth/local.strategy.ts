@@ -1,3 +1,4 @@
+import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ForbiddenException } from '@nestjs/common';
@@ -6,7 +7,10 @@ import { Strategy } from 'passport-local';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {
     super({ usernameField: 'email' });
   }
 
@@ -16,6 +20,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
     if (!user.emailVerified) {
+      this.userService.createAndSendEmailVerification(user);
       throw new ForbiddenException('Please verify your email address');
     }
     return user;

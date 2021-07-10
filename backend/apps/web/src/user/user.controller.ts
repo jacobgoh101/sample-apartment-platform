@@ -1,7 +1,10 @@
 import { FacebookLoginGuard } from '../../../../libs/account/src/auth/facebook-login.guard';
 import { GoogleLoginGuard } from '../../../../libs/account/src/auth/google-login.guard';
 import { LoginGuard } from '../../../../libs/account/src/auth/login.guard';
-import { VerifyEmailDto } from '../../../../libs/account/src/user/email-verification.dto';
+import {
+  CreateEmailVerificationDto,
+  VerifyEmailDto,
+} from '../../../../libs/account/src/user/email-verification.dto';
 import {
   SignUpDto,
   UpdateUserDto,
@@ -12,6 +15,7 @@ import { ROLES } from '../../../../libs/rbac/src/rbac.constant';
 import { Roles } from '../../../../libs/rbac/src/roles.decorator';
 import { RolesGuard } from '../../../../libs/rbac/src/roles.guard';
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -52,13 +56,13 @@ export class UserController {
   }
 
   @UseGuards(GoogleLoginGuard)
-  @Post('/sessions/social/google')
+  @Post('/oauth2/google/sessions')
   loginWithGoogleOauth2() {
     return;
   }
 
   @UseGuards(FacebookLoginGuard)
-  @Post('/sessions/social/facebook')
+  @Post('/oauth2/facebook/sessions')
   loginWithFacebookOauth2() {
     return;
   }
@@ -72,6 +76,25 @@ export class UserController {
   logout(@Req() req) {
     req.logout();
     return;
+  }
+
+  @Put('email-verifications/verify')
+  verifyEmail(@Body(new ValidationPipe()) body: VerifyEmailDto) {
+    const { token, userId } = body;
+    return this.userService.verifyEmail(token, userId);
+  }
+
+  @Post('email-verifications')
+  async createEmailVerification(
+    @Body(new ValidationPipe()) body: CreateEmailVerificationDto,
+  ) {
+    const { email } = body;
+    const user = await this.userService.findOneNonSocialUserByEmail(email);
+    // if not found, return success anyway for security reason
+    if (!user) return;
+    if (user?.emailVerified)
+      throw new BadRequestException('Email was already verified');
+    await this.userService.createAndSendEmailVerification(user);
   }
 
   @Roles(ROLES.ADMIN)
@@ -103,11 +126,5 @@ export class UserController {
     @Body(new ValidationPipe()) body: UpdateUserDto,
   ) {
     return this.userService.update(id, body);
-  }
-
-  @Put('email-verifications/verify')
-  verifyEmail(@Body(new ValidationPipe()) body: VerifyEmailDto) {
-    const { token, userId } = body;
-    return this.userService.verifyEmail(token, userId);
   }
 }

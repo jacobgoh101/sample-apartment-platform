@@ -132,7 +132,8 @@ export default defineComponent({
     watch(isPendingEmailVerification, (isPendingEmailVerification) => {
       if (isPendingEmailVerification) {
         DialogProgrammatic.alert({
-          message: 'This email is pending verification.',
+          message:
+            'This email is pending verification. Please check your inbox.',
         });
       }
     });

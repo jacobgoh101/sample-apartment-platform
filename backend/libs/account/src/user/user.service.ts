@@ -10,12 +10,7 @@ import { EmailVerificationModel } from './email-verification.model';
 import { USER_EVENT } from './user.constant';
 import { SignUpDto, SignupEventDto, UpdateUserDto } from './user.dto';
 import { UserModel } from './user.model';
-import {
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConflictException } from '@nestjs/common';
 import * as cryptoRandomString from 'crypto-random-string';
 import { EventEmitter2 } from 'eventemitter2';
