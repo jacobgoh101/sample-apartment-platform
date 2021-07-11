@@ -1,5 +1,7 @@
 import { st } from '../../../apps/web/src/database/database.module';
-import { IPaginationOptions, Pagination } from '../../types/pagination.types';
+import { UserModel } from '../../account/src/user/user.model';
+import { ROLES } from '../../rbac/src/rbac.constant';
+import { Pagination } from '../../types/pagination.types';
 import {
   CreateApartmentDto,
   FindApartmentQueryDto,
@@ -7,7 +9,6 @@ import {
 } from './apartment.dto';
 import { ApartmentModel } from './apartment.model';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { query } from 'express';
 import { omit } from 'lodash';
 import { ModelClass } from 'objection';
 
@@ -16,6 +17,8 @@ export class ApartmentService {
   constructor(
     @Inject('ApartmentModel')
     private readonly apartmentModel: ModelClass<ApartmentModel>,
+    @Inject('UserModel')
+    private readonly userModel: ModelClass<UserModel>,
   ) {}
 
   async create(body: CreateApartmentDto) {
@@ -108,10 +111,22 @@ export class ApartmentService {
     };
   }
 
+  async findById(id: number): Promise<ApartmentModel> {
+    return this.apartmentModel.query().modify('defaultSelects').findById(id);
+  }
+
   async delete(id: number) {
     if (!(await this.apartmentModel.query().findById(id)))
       throw new BadRequestException();
 
     return this.apartmentModel.query().deleteById(id);
+  }
+
+  async getAllRealtors() {
+    return this.userModel
+      .query()
+      .joinEager('roles')
+      .where('roles.v1', ROLES.REALTOR)
+      .orderBy('id', 'DESC');
   }
 }

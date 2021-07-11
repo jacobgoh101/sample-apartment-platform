@@ -50,10 +50,22 @@ export class ApartmentController {
     return this.apartmentService.find(query);
   }
 
+  @Get('apartments/:id')
+  getApartmentById(@Param('id') id: number) {
+    return this.apartmentService.findById(id);
+  }
+
   @Roles(ROLES.ADMIN)
   @UseGuards(RolesGuard)
   @Delete('apartments/:id')
   deleteApartments(@Param('id') id: number) {
     return this.apartmentService.delete(id);
+  }
+
+  @Roles(ROLES.ADMIN)
+  @UseGuards(RolesGuard)
+  @Get('realtors')
+  getAllRealtors() {
+    return this.apartmentService.getAllRealtors();
   }
 }

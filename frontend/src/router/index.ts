@@ -4,6 +4,9 @@ import Logout from '../views/Logout.vue';
 import ManageUsers from '../views/ManageUsers.vue';
 import EditUser from '../views/EditUser.vue';
 import CreateUser from '../views/CreateUser.vue';
+import ManageApartments from '../views/ManageApartments.vue';
+import EditApartment from '../views/EditApartment.vue';
+import CreateApartment from '../views/CreateApartment.vue';
 import Signup from '../views/Signup.vue';
 import VerifyEmail from '../views/VerifyEmail.vue';
 import Vue from 'vue';
@@ -46,6 +49,21 @@ const routes: Array<RouteConfig> = [
     path: '/admin/users/:id',
     name: 'EditUser',
     component: EditUser,
+  },
+  {
+    path: '/admin/apartments/managements',
+    name: 'ManageApartments',
+    component: ManageApartments,
+  },
+  {
+    path: '/admin/apartments/new',
+    name: 'CreateApartment',
+    component: CreateApartment,
+  },
+  {
+    path: '/admin/apartments/:id',
+    name: 'EditApartment',
+    component: EditApartment,
   },
   {
     path: '/email/verify',

@@ -55,6 +55,7 @@ export class ApartmentModel extends BaseModel {
         raw('ST_X(coordinates) as longitude'),
         raw('ST_Y(coordinates) as latitude'),
         ref('realtorId'),
+        ref('status'),
       );
     },
   };
