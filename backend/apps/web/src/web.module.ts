@@ -1,6 +1,8 @@
 import { AuthModule } from '../../../libs/account/src/auth/auth.module';
 import { UserModule } from '../../../libs/account/src/user/user.module';
+import { ApartmentModule } from '../../../libs/apartment/src';
 import { RbacModule } from '../../../libs/rbac/src/rbac.module';
+import { ApartmentController } from './apartment/apartment.controller';
 import { DatabaseModule } from './database/database.module';
 import { RoleController } from './role/role.controller';
 import { UserController } from './user/user.controller';
@@ -16,8 +18,14 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     AuthModule,
     UserModule,
     RbacModule,
+    ApartmentModule,
   ],
-  controllers: [WebController, UserController, RoleController],
+  controllers: [
+    WebController,
+    UserController,
+    RoleController,
+    ApartmentController,
+  ],
   providers: [WebService],
 })
 export class WebModule {}

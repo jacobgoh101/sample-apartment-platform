@@ -48,6 +48,7 @@
     "express-session": "^1.17.1",
     "helmet": "^4.4.1",
     "knex": "^0.95.6",
+    "knex-postgis": "^0.14.1",
     "luxon": "^1.26.0",
     "mailgun-js": "^0.22.0",
     "objection": "^2.2.15",
@@ -115,7 +116,9 @@
       "@app/rbac/(.*)": "<rootDir>/libs/rbac/src/$1",
       "@app/rbac": "<rootDir>/libs/rbac/src",
       "@app/notification/(.*)": "<rootDir>/libs/notification/src/$1",
-      "@app/notification": "<rootDir>/libs/notification/src"
+      "@app/notification": "<rootDir>/libs/notification/src",
+      "@app/apartment/(.*)": "<rootDir>/libs/apartment/src/$1",
+      "@app/apartment": "<rootDir>/libs/apartment/src"
     },
     "setupFiles": [
       "./jest-setup-file.ts"
