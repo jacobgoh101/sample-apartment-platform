@@ -81,40 +81,64 @@
               <b-input type="number" min="0" v-model.number="form.numOfRooms" />
             </b-field>
           </ValidationProvider>
-          <div class="columns">
+
+          <div class="columns is-multiline is-mobile">
             <div class="column">
               <ValidationProvider
                 name="Longitude"
-                rules="required|numeric"
+                rules="required|between:-180.999999,180.999999"
                 v-slot="{ errors }"
               >
                 <b-field
-                  class="mb-3"
                   label="Longitude"
                   :type="errors[0] && 'is-danger'"
                   :message="errors[0]"
                 >
-                  <b-input type="number" v-model.number="form.longitude" />
+                  <b-input
+                    type="text"
+                    v-model.number="form.longitude"
+                    name="longitude"
+                    :disabled="searchLocationEnabled"
+                  />
                 </b-field>
               </ValidationProvider>
             </div>
             <div class="column">
               <ValidationProvider
                 name="Latitude"
-                rules="required|numeric"
+                rules="required|between:-180.999999,180.999999"
                 v-slot="{ errors }"
               >
                 <b-field
-                  class="mb-3"
                   label="Latitude"
                   :type="errors[0] && 'is-danger'"
                   :message="errors[0]"
                 >
-                  <b-input type="number" v-model.number="form.latitude" />
+                  <b-input
+                    type="text"
+                    v-model.number="form.latitude"
+                    name="latitude"
+                    :disabled="searchLocationEnabled"
+                  />
                 </b-field>
               </ValidationProvider>
             </div>
+            <div class="column is-12">
+              <b-field class="mb-3" label="Location">
+                <LocationSearch
+                  @select="handleLocationSelect"
+                  :disabled="!searchLocationEnabled"
+                  :key="searchLocationEnabled"
+                />
+              </b-field>
+            </div>
+            <div class="column is-12">
+              <b-checkbox v-model="searchLocationEnabled" class="mb-3">
+                Search Location
+              </b-checkbox>
+            </div>
           </div>
+          <!-- <MapMarker /> -->
 
           <b-field label="Associated Realtor">
             <b-select
@@ -132,9 +156,6 @@
               </option>
             </b-select>
           </b-field>
-
-          <!--
-      realtorId: 0, -->
 
           <b-field class="mt-5 is-flex is-justify-content-flex-end">
             <button
@@ -157,6 +178,7 @@ import {
   computed,
   defineComponent,
   reactive,
+  ref,
   watch,
 } from '@vue/composition-api';
 import { useAdminGuard } from '@/hooks/route.hook.ts';
@@ -166,8 +188,12 @@ import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
 import { useCreateApartment, useGetAllRealtors } from '../hooks/apartment.hook';
+import MapMarker from '@/components/MapMarker.vue';
+import LocationSearch from '@/components/LocationSearch.vue';
+import { LocationIqPlace } from '../types/geo-coding.types';
 
 export default defineComponent({
+  components: { MapMarker, LocationSearch },
   setup() {
     useAdminGuard();
 
@@ -193,6 +219,13 @@ export default defineComponent({
       // @ts-ignore
       realtorId: null,
     });
+    const searchLocationEnabled = ref(false);
+
+    const handleLocationSelect = (place: LocationIqPlace) => {
+      if (!(place?.lon && place?.lat)) return;
+      form.longitude = +place.lon;
+      form.latitude = +place.lat;
+    };
 
     const { isSuccess, isLoading, error, mutate } = useCreateApartment();
 
@@ -225,6 +258,8 @@ export default defineComponent({
       ),
       ROLES,
       realtorOptions,
+      handleLocationSelect,
+      searchLocationEnabled,
     };
   },
 });

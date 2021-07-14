@@ -35,6 +35,12 @@
       ],
       "@app/apartment/*": [
         "libs/apartment/src/*"
+      ],
+      "@app/geocode": [
+        "libs/geocode/src"
+      ],
+      "@app/geocode/*": [
+        "libs/geocode/src/*"
       ]
     }
   }

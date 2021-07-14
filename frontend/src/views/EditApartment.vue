@@ -82,40 +82,64 @@
               <b-input type="number" min="0" v-model.number="form.numOfRooms" />
             </b-field>
           </ValidationProvider>
-          <div class="columns">
+
+          <div class="columns is-multiline is-mobile">
             <div class="column">
               <ValidationProvider
                 name="Longitude"
-                rules="required|numeric"
+                rules="required|between:-180.999999,180.999999"
                 v-slot="{ errors }"
               >
                 <b-field
-                  class="mb-3"
                   label="Longitude"
                   :type="errors[0] && 'is-danger'"
                   :message="errors[0]"
                 >
-                  <b-input type="number" v-model.number="form.longitude" />
+                  <b-input
+                    type="text"
+                    v-model.number="form.longitude"
+                    name="longitude"
+                    :disabled="searchLocationEnabled"
+                  />
                 </b-field>
               </ValidationProvider>
             </div>
             <div class="column">
               <ValidationProvider
                 name="Latitude"
-                rules="required|numeric"
+                rules="required|between:-180.999999,180.999999"
                 v-slot="{ errors }"
               >
                 <b-field
-                  class="mb-3"
                   label="Latitude"
                   :type="errors[0] && 'is-danger'"
                   :message="errors[0]"
                 >
-                  <b-input type="number" v-model.number="form.latitude" />
+                  <b-input
+                    type="text"
+                    v-model.number="form.latitude"
+                    name="latitude"
+                    :disabled="searchLocationEnabled"
+                  />
                 </b-field>
               </ValidationProvider>
             </div>
+            <div class="column is-12">
+              <b-field class="mb-3" label="Location">
+                <LocationSearch
+                  @select="handleLocationSelect"
+                  :disabled="!searchLocationEnabled"
+                  :key="searchLocationEnabled"
+                />
+              </b-field>
+            </div>
+            <div class="column is-12">
+              <b-checkbox v-model="searchLocationEnabled" class="mb-3">
+                Search Location
+              </b-checkbox>
+            </div>
           </div>
+          <!-- <MapMarker /> -->
 
           <b-field label="Associated Realtor">
             <b-select
@@ -134,9 +158,6 @@
             </b-select>
           </b-field>
 
-          <!--
-      realtorId: 0, -->
-
           <b-field class="mt-5 is-flex is-justify-content-flex-end">
             <button
               type="submit"
@@ -144,7 +165,7 @@
               :class="{ 'is-loading': isLoading }"
               :disabled="invalid"
             >
-              Create
+              Save
             </button>
           </b-field>
         </form>
@@ -158,6 +179,7 @@ import {
   computed,
   defineComponent,
   reactive,
+  ref,
   watch,
 } from '@vue/composition-api';
 import { useAdminGuard, useRoute } from '@/hooks/route.hook.ts';
@@ -167,14 +189,16 @@ import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
 import {
-  useCreateApartment,
   useFindApartmentById,
   useGetAllRealtors,
   useUpdateApartment,
 } from '../hooks/apartment.hook';
 import { once } from 'lodash';
+import LocationSearch from '@/components/LocationSearch.vue';
+import { LocationIqPlace } from '../types/geo-coding.types';
 
 export default defineComponent({
+  components: { LocationSearch },
   setup() {
     useAdminGuard();
 
@@ -207,6 +231,13 @@ export default defineComponent({
       // @ts-ignore
       realtorId: null,
     });
+    const searchLocationEnabled = ref(false);
+
+    const handleLocationSelect = (place: LocationIqPlace) => {
+      if (!(place?.lon && place?.lat)) return;
+      form.longitude = +place.lon;
+      form.latitude = +place.lat;
+    };
 
     const { data: realtorsData } = useGetAllRealtors();
     const realtorOptions = computed(() =>
@@ -257,6 +288,8 @@ export default defineComponent({
       ROLES,
       realtorOptions,
       isFetchingApartment,
+      handleLocationSelect,
+      searchLocationEnabled,
     };
   },
 });

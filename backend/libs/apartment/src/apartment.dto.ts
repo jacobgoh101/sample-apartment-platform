@@ -12,6 +12,7 @@ import {
   IsIn,
   ValidateIf,
   IsNotEmpty,
+  Max,
 } from 'class-validator';
 
 export class CreateApartmentDto {
@@ -37,10 +38,12 @@ export class CreateApartmentDto {
   @Min(1)
   numOfRooms: number;
 
-  @IsLongitude()
+  @Min(-180.999999)
+  @Max(180.999999)
   longitude: number;
 
-  @IsLatitude()
+  @Min(-180.999999)
+  @Max(180.999999)
   latitude: number;
 
   @IsInt()
@@ -71,10 +74,12 @@ export class UpdateApartmentDto {
   @Min(1)
   numOfRooms: number;
 
-  @IsLongitude()
+  @Min(-180.999999)
+  @Max(180.999999)
   longitude: number;
 
-  @IsLatitude()
+  @Min(-180.999999)
+  @Max(180.999999)
   latitude: number;
 
   @IsInt()
@@ -119,12 +124,14 @@ export class FindApartmentQueryDto {
   sortedBy: 'nearest';
 
   @ValidateIf((o) => o.sortedBy === 'nearest')
-  @IsLongitude()
+  @Min(-180.999999)
+  @Max(180.999999)
   @Type(() => Number)
   longitude: number;
 
   @ValidateIf((o) => o.sortedBy === 'nearest')
-  @IsLatitude()
+  @Min(-180.999999)
+  @Max(180.999999)
   @Type(() => Number)
   latitude: number;
 
