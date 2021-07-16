@@ -25,14 +25,14 @@ import {
 export class ApartmentController {
   constructor(private readonly apartmentService: ApartmentService) {}
 
-  @Roles(ROLES.ADMIN)
+  @Roles(ROLES.REALTOR)
   @UseGuards(RolesGuard)
   @Post('apartments')
   createApartments(@Body(new ValidationPipe()) body: CreateApartmentDto) {
     return this.apartmentService.create(body);
   }
 
-  @Roles(ROLES.ADMIN)
+  @Roles(ROLES.REALTOR)
   @UseGuards(RolesGuard)
   @Put('apartments/:id')
   updateApartments(
@@ -55,14 +55,14 @@ export class ApartmentController {
     return this.apartmentService.findById(id);
   }
 
-  @Roles(ROLES.ADMIN)
+  @Roles(ROLES.REALTOR)
   @UseGuards(RolesGuard)
   @Delete('apartments/:id')
   deleteApartments(@Param('id') id: number) {
     return this.apartmentService.delete(id);
   }
 
-  @Roles(ROLES.ADMIN)
+  @Roles(ROLES.REALTOR)
   @UseGuards(RolesGuard)
   @Get('realtors')
   getAllRealtors() {

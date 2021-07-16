@@ -139,7 +139,6 @@
               </b-checkbox>
             </div>
           </div>
-          <!-- <MapMarker /> -->
 
           <b-field label="Associated Realtor">
             <b-select
@@ -182,7 +181,7 @@ import {
   ref,
   watch,
 } from '@vue/composition-api';
-import { useAdminGuard, useRoute } from '@/hooks/route.hook.ts';
+import { useRealtorGuard, useRoute } from '@/hooks/route.hook.ts';
 import { useErrorNitofication } from '@/hooks/error.hook.ts';
 import { CreateApartmentDto } from '../types/apartment.types';
 import { ROLES } from '../types/roles.types';
@@ -200,7 +199,7 @@ import { LocationIqPlace } from '../types/geo-coding.types';
 export default defineComponent({
   components: { LocationSearch },
   setup() {
-    useAdminGuard();
+    useRealtorGuard();
 
     const route = useRoute();
     const id = computed(() => +route.params?.id);

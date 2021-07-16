@@ -22,4 +22,5 @@ export default defineComponent({
 @import '~@mdi/font/css/materialdesignicons.min.css';
 @import 'bulma/sass/utilities/_all.sass';
 @import 'bulma-divider/src/sass/index.sass';
+@import '@/assets/scss/_global.scss';
 </style>

@@ -138,7 +138,6 @@
               </b-checkbox>
             </div>
           </div>
-          <!-- <MapMarker /> -->
 
           <b-field label="Associated Realtor">
             <b-select
@@ -181,21 +180,20 @@ import {
   ref,
   watch,
 } from '@vue/composition-api';
-import { useAdminGuard } from '@/hooks/route.hook.ts';
+import { useRealtorGuard } from '@/hooks/route.hook.ts';
 import { useErrorNitofication } from '@/hooks/error.hook.ts';
 import { CreateApartmentDto } from '../types/apartment.types';
 import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
 import { useCreateApartment, useGetAllRealtors } from '../hooks/apartment.hook';
-import MapMarker from '@/components/MapMarker.vue';
 import LocationSearch from '@/components/LocationSearch.vue';
 import { LocationIqPlace } from '../types/geo-coding.types';
 
 export default defineComponent({
-  components: { MapMarker, LocationSearch },
+  components: { LocationSearch },
   setup() {
-    useAdminGuard();
+    useRealtorGuard();
 
     const form = reactive<CreateApartmentDto>({
       name: '',

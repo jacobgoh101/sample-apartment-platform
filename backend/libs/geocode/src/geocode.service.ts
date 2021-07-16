@@ -1,10 +1,7 @@
 import { ENV } from '../../config/env';
 import { HttpService, Logger, Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
-import { ServiceUnavailableException } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/common';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable()
 export class GeocodeService {
@@ -13,11 +10,11 @@ export class GeocodeService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  geocode(q: string) {
+  async geocode(q: string) {
     Logger.log(q, 'Calling Location IQ API');
-    if (!q?.trim?.()) return of([]);
+    if (!q?.trim?.()) return [];
     try {
-      return this.httpService
+      const { data } = await this.httpService
         .get('https://us1.locationiq.com/v1/search.php', {
           params: {
             format: 'json',
@@ -25,10 +22,11 @@ export class GeocodeService {
             q,
           },
         })
-        .pipe(map((d) => d.data));
+        .toPromise();
+      return data;
     } catch (error) {
-      Logger.error(error, 'geocode error');
-      throw new ServiceUnavailableException();
+      Logger.error({ error }, 'geocode error');
+      return [];
     }
   }
 }

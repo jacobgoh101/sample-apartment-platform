@@ -51,17 +51,17 @@ const routes: Array<RouteConfig> = [
     component: EditUser,
   },
   {
-    path: '/admin/apartments/managements',
+    path: '/apartments/managements',
     name: 'ManageApartments',
     component: ManageApartments,
   },
   {
-    path: '/admin/apartments/new',
+    path: '/apartments/new',
     name: 'CreateApartment',
     component: CreateApartment,
   },
   {
-    path: '/admin/apartments/:id',
+    path: '/apartments/:id/edit',
     name: 'EditApartment',
     component: EditApartment,
   },
