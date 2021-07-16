@@ -27,8 +27,7 @@ export async function up(knex: Knex) {
         .unsigned()
         .notNullable()
         .references('id')
-        .inTable(usersTableName)
-        .onDelete('CASCADE');
+        .inTable(usersTableName);
     });
 }
 

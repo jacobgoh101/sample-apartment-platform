@@ -129,4 +129,11 @@ export class ApartmentService {
       .where('roles.v1', ROLES.REALTOR)
       .orderBy('id', 'DESC');
   }
+
+  async findApartmentsByRealtor(realtorId: number): Promise<ApartmentModel[]> {
+    return this.apartmentModel
+      .query()
+      .where({ realtorId })
+      .modify('defaultSelects');
+  }
 }

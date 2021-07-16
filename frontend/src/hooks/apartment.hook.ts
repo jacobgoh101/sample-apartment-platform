@@ -1,11 +1,12 @@
 import { PagingOption } from '../types/pagination.types';
-import { ToRefs, reactive, watch, Ref } from 'vue-demi';
+import { ToRefs, reactive, watch, Ref, computed } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
 import { UseQueryOptions } from 'react-query';
 import {
   createApartmentApi,
   deleteApartmentApi,
   findApartmentByIdApi,
+  findApartmentsByRealtorIdApi,
   getAllRealtorsApi,
   getApartmentsApi,
   updateApartmentApi,
@@ -17,6 +18,7 @@ import {
   Apartment,
 } from '../types/apartment.types';
 import { AxiosResponse } from 'axios';
+import { fetchOnceQueryOption } from './util.hook';
 
 export const useApartments = ({ limit, page }: ToRefs<PagingOption>) => {
   return useQuery(reactive(['get-apartment', limit, page]), () =>
@@ -92,4 +94,15 @@ export const useFindApartmentById = (
 
 export const useGetAllRealtors = () => {
   return useQuery(reactive(['get-all-realtors']), () => getAllRealtorsApi());
+};
+
+export const useFindApartmentByRealtorId = (id: Ref<number>) => {
+  return useQuery(
+    reactive(['find-apartments-by-realtor-id', id]),
+    () => findApartmentsByRealtorIdApi(id.value),
+    reactive({
+      ...fetchOnceQueryOption,
+      enabled: computed(() => !!id.value),
+    })
+  );
 };

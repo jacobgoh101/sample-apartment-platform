@@ -28,3 +28,6 @@ export const findApartmentByIdApi = (id: number) =>
   $axios.get<Apartment>('/apartments/' + id);
 
 export const getAllRealtorsApi = () => $axios.get<User[]>('/realtors/');
+
+export const findApartmentsByRealtorIdApi = (id: number) =>
+  $axios.get<Apartment[]>(`/realtors/${id}/apartments`);

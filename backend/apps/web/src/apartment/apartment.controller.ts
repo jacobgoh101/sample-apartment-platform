@@ -68,4 +68,11 @@ export class ApartmentController {
   getAllRealtors() {
     return this.apartmentService.getAllRealtors();
   }
+
+  @Roles(ROLES.ADMIN)
+  @UseGuards(RolesGuard)
+  @Get('realtors/:id/apartments')
+  getApartmentsByRealtors(@Param('id') id: number) {
+    return this.apartmentService.findApartmentsByRealtor(id);
+  }
 }
