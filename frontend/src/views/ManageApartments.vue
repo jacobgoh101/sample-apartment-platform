@@ -78,6 +78,10 @@
           {{ getRealtorName(row.realtorId) }}
         </b-table-column>
 
+        <b-table-column field="status" label="Status" v-slot="{ row }">
+          {{ row.status }}
+        </b-table-column>
+
         <b-table-column label="Action" v-slot="{ row: { id } }">
           <div class="buttons">
             <b-button

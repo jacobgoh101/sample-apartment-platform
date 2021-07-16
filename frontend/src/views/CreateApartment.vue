@@ -147,11 +147,27 @@
               v-model="form.realtorId"
             >
               <option
-                v-for="options in realtorOptions || []"
-                :value="options.id"
-                :key="options.id"
+                v-for="option in realtorOptions || []"
+                :value="option.id"
+                :key="option.id"
               >
-                {{ options.label }}
+                {{ option.label }}
+              </option>
+            </b-select>
+          </b-field>
+
+          <b-field label="Status">
+            <b-select
+              placeholder="Select a Status"
+              expanded
+              v-model="form.status"
+            >
+              <option
+                v-for="option in statusOptions"
+                :value="option"
+                :key="option"
+              >
+                {{ option }}
               </option>
             </b-select>
           </b-field>
@@ -182,7 +198,7 @@ import {
 } from '@vue/composition-api';
 import { useRealtorGuard } from '@/hooks/route.hook.ts';
 import { useErrorNitofication } from '@/hooks/error.hook.ts';
-import { CreateApartmentDto } from '../types/apartment.types';
+import { APARTMENT_STATUS, CreateApartmentDto } from '../types/apartment.types';
 import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
 import { useRouter } from '../router';
@@ -216,6 +232,9 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       realtorId: null,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      status: null,
     });
     const searchLocationEnabled = ref(false);
 
@@ -234,6 +253,7 @@ export default defineComponent({
         label: `${u.name} (${u.email})`,
       }))
     );
+    const statusOptions = computed(() => Object.values(APARTMENT_STATUS));
 
     const router = useRouter();
 
@@ -258,6 +278,7 @@ export default defineComponent({
       realtorOptions,
       handleLocationSelect,
       searchLocationEnabled,
+      statusOptions,
     };
   },
 });

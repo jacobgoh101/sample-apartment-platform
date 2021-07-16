@@ -27,6 +27,7 @@ export interface UpdateApartmentDto {
   longitude: number;
   latitude: number;
   realtorId: number;
+  status: APARTMENT_STATUS;
 }
 
 export interface CreateApartmentDto {
@@ -38,6 +39,7 @@ export interface CreateApartmentDto {
   longitude: number;
   latitude: number;
   realtorId: number;
+  status: APARTMENT_STATUS;
 }
 
 export interface FindApartmentQueryDto {
@@ -50,4 +52,5 @@ export interface FindApartmentQueryDto {
   sortedBy?: 'nearest';
   longitude?: number;
   latitude?: number;
+  status?: APARTMENT_STATUS;
 }
