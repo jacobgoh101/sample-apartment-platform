@@ -15,6 +15,9 @@ import 'vue-googlemaps/dist/vue-googlemaps.css';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import VueGoogleMaps from 'vue-googlemaps';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import VueMasonry from 'vue-masonry-css';
 
 Vue.config.productionTip = false;
 Vue.prototype.log = console.log;
@@ -29,6 +32,7 @@ Vue.use(VueGoogleMaps, {
     useBetaRenderer: false,
   },
 });
+Vue.use(VueMasonry);
 
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);

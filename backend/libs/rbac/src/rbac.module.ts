@@ -1,7 +1,7 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { RbacEventHandler } from './rbac.event';
 import { casbinProviders } from './rbac.provider';
 import { RbacService } from './rbac.service';
-import { RbacEventHandler } from './rbac.event';
+import { Module, OnModuleInit } from '@nestjs/common';
 
 @Module({
   providers: [...casbinProviders, RbacService, RbacEventHandler],

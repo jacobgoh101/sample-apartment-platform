@@ -7,7 +7,6 @@ import { ApartmentService } from '../../../../libs/apartment/src/apartment.servi
 import { ROLES } from '../../../../libs/rbac/src/rbac.constant';
 import { Roles } from '../../../../libs/rbac/src/roles.decorator';
 import { RolesGuard } from '../../../../libs/rbac/src/roles.guard';
-import { IPaginationOptions } from '../../../../libs/types/pagination.types';
 import {
   Body,
   Controller,
@@ -17,6 +16,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -46,8 +46,9 @@ export class ApartmentController {
   getApartments(
     @Query(new ValidationPipe())
     query: FindApartmentQueryDto,
+    @Req() req,
   ) {
-    return this.apartmentService.find(query);
+    return this.apartmentService.find(query, req.user);
   }
 
   @Get('apartments/:id')

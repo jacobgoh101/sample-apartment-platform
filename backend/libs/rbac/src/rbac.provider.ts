@@ -9,6 +9,7 @@ export const casbinProviders = [
     useFactory: async () => {
       const adapter = await ObjectionAdapter.newAdapter(knexInstance, {
         createTable: true,
+        logger: console,
       });
 
       return newEnforcer(

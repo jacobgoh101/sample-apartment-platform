@@ -1,3 +1,4 @@
+import { APARTMENT_STATUS } from './apartment.constant';
 import { Type } from 'class-transformer';
 import {
   IsString,
@@ -6,12 +7,9 @@ import {
   IsNumber,
   Min,
   IsInt,
-  IsLongitude,
-  IsLatitude,
   IsOptional,
   IsIn,
   ValidateIf,
-  IsNotEmpty,
   Max,
 } from 'class-validator';
 
@@ -117,6 +115,11 @@ export class FindApartmentQueryDto {
   @IsOptional()
   @Type(() => Number)
   maxNumOfRooms: number;
+
+  @IsString()
+  @IsIn(Object.values(APARTMENT_STATUS))
+  @IsOptional()
+  status: APARTMENT_STATUS;
 
   @IsString()
   @IsIn(['nearest'])

@@ -197,7 +197,7 @@ import {
   watch,
 } from '@vue/composition-api';
 import { useRealtorGuard } from '@/hooks/route.hook.ts';
-import { useErrorNitofication } from '@/hooks/error.hook.ts';
+import { useErrorNotification } from '@/hooks/error.hook.ts';
 import { APARTMENT_STATUS, CreateApartmentDto } from '../types/apartment.types';
 import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
@@ -257,7 +257,7 @@ export default defineComponent({
 
     const router = useRouter();
 
-    useErrorNitofication(error);
+    useErrorNotification(error);
 
     watch(isSuccess, (isSuccess) => {
       if (isSuccess) router.push({ name: 'ManageApartments' });

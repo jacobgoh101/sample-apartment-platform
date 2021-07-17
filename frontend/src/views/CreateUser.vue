@@ -100,7 +100,7 @@ import {
   watch,
 } from '@vue/composition-api';
 import { useAdminGuard } from '@/hooks/route.hook.ts';
-import { useErrorNitofication } from '@/hooks/error.hook.ts';
+import { useErrorNotification } from '@/hooks/error.hook.ts';
 import { CreateUserDto } from '../types/user.types';
 import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
@@ -124,7 +124,7 @@ export default defineComponent({
 
     const router = useRouter();
 
-    useErrorNitofication(error);
+    useErrorNotification(error);
 
     watch(isSuccess, (isSuccess) => {
       if (isSuccess) router.push({ name: 'ManageUsers' });
