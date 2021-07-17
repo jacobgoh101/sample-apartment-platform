@@ -26,6 +26,10 @@ export class RbacService {
     return this.enforcer.deleteRoleForUser(userId?.toString(), role);
   }
 
+  deleteRolesForUser(userId: number) {
+    return this.enforcer.deleteRolesForUser(userId?.toString());
+  }
+
   getRolesForUser(userId: number) {
     return this.enforcer
       .getRolesForUser(userId?.toString())

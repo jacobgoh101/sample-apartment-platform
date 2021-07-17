@@ -55,4 +55,9 @@ export class RbacEventHandler {
       ]);
     }
   }
+
+  @OnEvent(USER_EVENT.DELETE)
+  async handleUserDeleteEvent(id: number) {
+    await this.rbacService.deleteRolesForUser(id);
+  }
 }

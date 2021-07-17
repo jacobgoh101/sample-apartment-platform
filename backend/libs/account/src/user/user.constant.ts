@@ -3,4 +3,5 @@ export enum USER_EVENT {
   UPDATE = 'UPDATE',
   // create by admin
   CREATE = 'CREATE',
+  DELETE = 'DELETE',
 }
