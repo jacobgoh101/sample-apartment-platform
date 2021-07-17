@@ -204,7 +204,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from '../router';
 import { useCreateApartment, useGetAllRealtors } from '../hooks/apartment.hook';
 import LocationSearch from '@/components/LocationSearch.vue';
-import { LocationIqPlace } from '../types/geo-coding.types';
+import { Coordinate } from '../types/geo-coding.types';
 
 export default defineComponent({
   components: { LocationSearch },
@@ -238,7 +238,7 @@ export default defineComponent({
     });
     const searchLocationEnabled = ref(false);
 
-    const handleLocationSelect = (place: LocationIqPlace) => {
+    const handleLocationSelect = (place: Coordinate) => {
       if (!(place?.lon && place?.lat)) return;
       form.longitude = +place.lon;
       form.latitude = +place.lat;

@@ -7,6 +7,9 @@
     @typing="handleTyping"
     @select="handleSelect"
     :disabled="disabled"
+    :icon-right="useDetectLocationIcon && 'crosshairs-gps'"
+    :icon-right-clickable="!disabled && useDetectLocationIcon"
+    @icon-right-click="handleSelectCurrentLocation"
   >
     <template slot-scope="props">
       <div class="media">
@@ -20,17 +23,22 @@
         </div>
       </div>
     </template>
+    <template v-slot:empty>
+      <span v-if="isFetching"> Loading... </span>
+      <span v-else> No results found</span>
+    </template>
   </b-autocomplete>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { debounce } from 'lodash';
-import { LocationIqPlace } from '@/types/geo-coding.types';
+import { Coordinate, LocationIqPlace } from '@/types/geo-coding.types';
 import { useGeoCodingApi } from '@/hooks/geo-coding.hook';
+import { DialogProgrammatic } from 'buefy';
 
 export default defineComponent({
-  props: { disabled: Boolean },
+  props: { disabled: Boolean, useDetectLocationIcon: Boolean },
   setup(__, { emit }) {
     const q = ref('');
 
@@ -38,8 +46,25 @@ export default defineComponent({
       q.value = e;
     }, 500);
 
-    const handleSelect = (options: LocationIqPlace) => {
-      emit('select', options);
+    const emitSelect = ({ lon, lat }: Coordinate) =>
+      emit('select', { lon, lat });
+
+    const handleSelect = (loc: LocationIqPlace) => {
+      emitSelect({ lon: +loc?.lon, lat: +loc?.lat });
+    };
+
+    const handleSelectCurrentLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          emitSelect({ lon, lat });
+        });
+      } else {
+        DialogProgrammatic.alert(
+          'Geolocation is not supported by this browser.'
+        );
+      }
     };
 
     const { data, isFetching } = useGeoCodingApi(q);
@@ -47,7 +72,15 @@ export default defineComponent({
       return data.value?.data || [];
     });
 
-    return { q, options, handleTyping, handleSelect, data, isFetching };
+    return {
+      q,
+      options,
+      handleTyping,
+      handleSelect,
+      handleSelectCurrentLocation,
+      data,
+      isFetching,
+    };
   },
 });
 </script>
