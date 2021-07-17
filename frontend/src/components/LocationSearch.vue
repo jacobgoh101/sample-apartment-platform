@@ -7,7 +7,7 @@
     @typing="handleTyping"
     @select="handleSelect"
     :disabled="disabled"
-    :icon-right="useDetectLocationIcon && 'crosshairs-gps'"
+    :icon-right="useDetectLocationIcon ? 'crosshairs-gps' : undefined"
     :icon-right-clickable="!disabled && useDetectLocationIcon"
     @icon-right-click="handleSelectCurrentLocation"
   >

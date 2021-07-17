@@ -23,15 +23,19 @@ export const useRoles = () => {
   const hasRealtorRole = computed(
     () => isLoaded.value && roles.value?.includes(ROLES.REALTOR)
   );
-  const isRegularUser = computed(
-    () => isLoaded.value && roles.value?.length === 0
+  const hasClientRole = computed(
+    () => isLoaded.value && roles.value?.includes(ROLES.CLIENT)
   );
+  const hasNoRole = computed(() => {
+    return isLoaded.value && roles.value?.length === 0;
+  });
   return {
     ...query,
     roles,
     hasAdminRole,
     hasRealtorRole,
+    hasClientRole,
+    hasNoRole,
     isLoaded,
-    isRegularUser,
   };
 };

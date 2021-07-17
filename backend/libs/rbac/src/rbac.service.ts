@@ -32,7 +32,7 @@ export class RbacService {
 
   getRolesForUser(userId: number) {
     return this.enforcer
-      .getRolesForUser(userId?.toString())
+      .getRolesForUser(String(userId))
       .then((arr) => arr as ROLES[]);
   }
 

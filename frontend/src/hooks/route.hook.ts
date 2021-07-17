@@ -1,14 +1,10 @@
 import { useRouter } from '../router';
 import { useRoles } from './rbac.hook';
-import {
-  getCurrentInstance,
-  onBeforeMount,
-  watch,
-  watchEffect,
-} from '@vue/composition-api';
+import { getCurrentInstance, watch, watchEffect } from '@vue/composition-api';
 import Vue from 'vue';
 import { NavigationGuard } from 'vue-router';
 import { ComponentOptions } from 'vue/types/umd';
+import { useAuth, useRoleValidityChecker } from './authentication.hook';
 
 export function useRoute() {
   const vm = getCurrentInstance();
@@ -42,6 +38,10 @@ export function onBeforeRouteLeave(callback: NavigationGuard<Vue>) {
   return onHook('beforeRouteLeave', callback);
 }
 
+export function useAuthenticatedGuard() {
+  useRoleValidityChecker();
+}
+
 export function useRealtorGuard() {
   const { hasRealtorRole, hasAdminRole, isFetching, isSuccess } = useRoles();
   const router = useRouter();
@@ -70,4 +70,25 @@ export function useAdminGuard() {
     }
   });
   return {};
+}
+
+export function useSignInPageGuard() {
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+  watch(
+    isLoggedIn,
+    () => {
+      if (isLoggedIn.value) {
+        setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          ['Login', 'Signup'].includes(router.currentRoute.name) &&
+            router.push({ name: 'Home' });
+          return;
+        }, 500);
+      }
+    },
+    { immediate: true }
+  );
+  return { isLoggedIn };
 }

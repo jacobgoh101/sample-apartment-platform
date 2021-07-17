@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-fullheight">
+  <section class="hero is-fullheight" :class="{ 'is-invisible': isLoggedIn }">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
@@ -109,9 +109,12 @@ import { AxiosError } from 'axios';
 import { useSocialLogin } from '../hooks/hellojs.hook';
 import { DialogProgrammatic } from 'buefy';
 import { useRouter } from '../router';
+import { useSignInPageGuard } from '../hooks/route.hook';
 
 export default defineComponent({
   setup() {
+    const { isLoggedIn } = useSignInPageGuard();
+
     const router = useRouter();
     const email = ref<string>('');
     const name = ref<string>('');
@@ -172,6 +175,7 @@ export default defineComponent({
       error,
       mutate,
       errMsg,
+      isLoggedIn,
     };
   },
 });

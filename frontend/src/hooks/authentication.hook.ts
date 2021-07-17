@@ -11,7 +11,8 @@ import { computed, ComputedRef, reactive, Ref, watch } from 'vue-demi';
 import { useQuery, useMutation } from 'vue-query';
 import { useRouter } from '../router';
 import { useClearSocialSession } from './hellojs.hook';
-import { ToastProgrammatic } from 'buefy';
+import { DialogProgrammatic } from 'buefy';
+import { watchEffect } from '@vue/composition-api';
 
 export const useSignup = ({
   name,
@@ -155,3 +156,21 @@ export const useAfterAuthRedirection = (
   );
   return {};
 };
+
+export function useRoleValidityChecker() {
+  const { isLoggedIn } = useAuth();
+  const { isFetching, isSuccess, hasNoRole } = useRoles();
+  const isReady = computed(() => isSuccess.value && !isFetching.value);
+  const unwatch = watchEffect(() => {
+    if (isReady.value) {
+      if (isLoggedIn.value && hasNoRole.value) {
+        unwatch();
+        DialogProgrammatic.alert(
+          `Your account's roles are invalid. Please contact support@apartmentrental.com `
+        );
+        return;
+      }
+    }
+  });
+  return { hasNoRole };
+}
