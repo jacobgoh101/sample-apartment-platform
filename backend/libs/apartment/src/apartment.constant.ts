@@ -1,0 +1,4 @@
+export enum APARTMENT_STATUS {
+  AVAILABLE = 'AVAILABLE',
+  RENTED = 'RENTED',
+}

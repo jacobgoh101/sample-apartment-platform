@@ -2,9 +2,11 @@ import { SessionModel } from '../../../../libs/account/src/auth/session.model';
 import { EmailVerificationModel } from '../../../../libs/account/src/user/email-verification.model';
 import { FailedLoginAttemptModel } from '../../../../libs/account/src/user/failed-login-attempts.model';
 import { UserModel } from '../../../../libs/account/src/user/user.model';
+import { ApartmentModel } from '../../../../libs/apartment/src/apartment.model';
 import { ENV } from '../../../../libs/config/env';
 import { Global, Module } from '@nestjs/common';
 import Knex from 'knex';
+import * as knexPostgis from 'knex-postgis';
 import { knexSnakeCaseMappers, Model } from 'objection';
 
 const models = [
@@ -12,6 +14,7 @@ const models = [
   SessionModel,
   EmailVerificationModel,
   FailedLoginAttemptModel,
+  ApartmentModel,
 ];
 
 const modelProviders = models.map((model) => {
@@ -34,6 +37,7 @@ export const knexInstance = Knex({
   ...knexSnakeCaseMappers(),
   pool: { min: 0, max: 20 },
 });
+export const st = knexPostgis(knexInstance);
 
 const providers = [
   ...modelProviders,

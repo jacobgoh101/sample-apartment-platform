@@ -14,7 +14,7 @@ services:
       POSTGRES_MULTIPLE_EXTENSIONS: postgis,hstore,postgis_topology,postgis_raster,pgrouting
     container_name: toptal_database
     volumes:
-      - toptal_pgdata:/var/lib/postgresql/data
+      - toptal_pgdata:/var/lib/postgresql
     networks:
       - toptal
     restart: unless-stopped

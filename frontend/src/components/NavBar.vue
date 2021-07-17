@@ -12,6 +12,13 @@
       <b-navbar-dropdown label="Manage" v-if="hasRealtorRole || hasAdminRole">
         <b-navbar-item
           tag="router-link"
+          :to="{ name: 'ManageApartments' }"
+          v-if="hasRealtorRole || hasAdminRole"
+        >
+          Manage Apartments
+        </b-navbar-item>
+        <b-navbar-item
+          tag="router-link"
           :to="{ name: 'ManageUsers' }"
           v-if="hasAdminRole"
         >

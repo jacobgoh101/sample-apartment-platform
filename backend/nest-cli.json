@@ -43,6 +43,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/notification/tsconfig.lib.json"
       }
+    },
+    "apartment": {
+      "type": "library",
+      "root": "libs/apartment",
+      "entryFile": "index",
+      "sourceRoot": "libs/apartment/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/apartment/tsconfig.lib.json"
+      }
+    },
+    "geocode": {
+      "type": "library",
+      "root": "libs/geocode",
+      "entryFile": "index",
+      "sourceRoot": "libs/geocode/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/geocode/tsconfig.lib.json"
+      }
     }
   }
 }

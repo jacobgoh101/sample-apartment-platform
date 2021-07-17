@@ -29,6 +29,18 @@
       ],
       "@app/notification/*": [
         "libs/notification/src/*"
+      ],
+      "@app/apartment": [
+        "libs/apartment/src"
+      ],
+      "@app/apartment/*": [
+        "libs/apartment/src/*"
+      ],
+      "@app/geocode": [
+        "libs/geocode/src"
+      ],
+      "@app/geocode/*": [
+        "libs/geocode/src/*"
       ]
     }
   }
