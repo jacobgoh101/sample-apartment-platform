@@ -66,7 +66,7 @@ export default defineComponent<{
       };
     });
     const infoOptions = ref({
-      content: '123',
+      content: '',
       //optional: offset infowindow so it visually sits nicely on top of our marker
       pixelOffset: {
         width: 0,
@@ -158,35 +158,6 @@ export default defineComponent<{
     };
   },
 });
-// export default {
-//   data() {
-//     return {
-//       center: {
-//         lat: 48.853,
-//         lng: 2.298,
-//       },
-//       path: [
-//         {
-//           lat: 48.853,
-//           lng: 2.298,
-//         },
-//         {
-//           lat: 48.8735,
-//           lng: 2.2951,
-//         },
-//       ],
-//       options: {},
-//       userPosition: null,
-//       zoom: 12,
-//     };
-//   },
-//   methods: {
-//     handleMarkerChanged(e) {
-//       console.log(e.latLng.lat());
-//       console.log(e.latLng.lng());
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss">
