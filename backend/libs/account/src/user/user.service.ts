@@ -180,7 +180,7 @@ export class UserService {
       : undefined;
     const trimmedBody = omit(body, 'password');
 
-    const user = await this.userModel
+    let user = await this.userModel
       .query()
       .insert({ ...trimmedBody, passwordHash })
       .returning('*');
@@ -189,6 +189,8 @@ export class UserService {
       ...body,
       id: user?.id,
     });
+
+    user = await this.findOneById(user?.id);
 
     return user;
   }
