@@ -40,8 +40,8 @@ export class CreateApartmentDto {
   @Max(180.999999)
   longitude: number;
 
-  @Min(-180.999999)
-  @Max(180.999999)
+  @Min(-90)
+  @Max(90)
   latitude: number;
 
   @IsInt()
@@ -76,8 +76,8 @@ export class UpdateApartmentDto {
   @Max(180.999999)
   longitude: number;
 
-  @Min(-180.999999)
-  @Max(180.999999)
+  @Min(-90)
+  @Max(90)
   latitude: number;
 
   @IsInt()
@@ -133,8 +133,8 @@ export class FindApartmentQueryDto {
   longitude: number;
 
   @ValidateIf((o) => o.sortedBy === 'nearest')
-  @Min(-180.999999)
-  @Max(180.999999)
+  @Min(-90)
+  @Max(90)
   @Type(() => Number)
   latitude: number;
 
