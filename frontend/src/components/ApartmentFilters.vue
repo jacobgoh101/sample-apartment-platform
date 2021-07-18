@@ -43,21 +43,23 @@
       </div>
     </div>
     <div class="column is-12-mobile is-6-tablet is-4-desktop"></div>
-    <div
-      class="column is-12-mobile is-6-tablet is-4-desktop"
-      v-if="hasRealtorRole || hasAdminRole"
-    >
-      <b-field label="Status">
-        <b-radio
-          v-model="statusSynced"
-          :native-value="APARTMENT_STATUS.AVAILABLE"
-        >
-          {{ APARTMENT_STATUS.AVAILABLE }}
-        </b-radio>
-        <b-radio v-model="statusSynced" :native-value="APARTMENT_STATUS.RENTED">
-          {{ APARTMENT_STATUS.RENTED }}
-        </b-radio>
-      </b-field>
+    <div class="column is-12-mobile is-6-tablet is-4-desktop">
+      <template v-if="hasRealtorRole || hasAdminRole">
+        <b-field label="Status">
+          <b-radio
+            v-model="statusSynced"
+            :native-value="APARTMENT_STATUS.AVAILABLE"
+          >
+            {{ APARTMENT_STATUS.AVAILABLE }}
+          </b-radio>
+          <b-radio
+            v-model="statusSynced"
+            :native-value="APARTMENT_STATUS.RENTED"
+          >
+            {{ APARTMENT_STATUS.RENTED }}
+          </b-radio>
+        </b-field>
+      </template>
     </div>
     <div class="column is-12-mobile is-6-tablet is-4-desktop">
       <b-field label="View">
