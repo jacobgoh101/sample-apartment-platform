@@ -6,7 +6,6 @@ export async function seed(knex: Knex): Promise<any> {
   const userModel = () => knex<UserModel>(UserModel.tableName);
   await userModel()
     .insert({
-      id: 1,
       email: 'jacobgoh101@gmail.com',
       passwordHash: BCRYPT.hashPasswordSync('Pa$$w0rd!'),
       name: 'The Admin',
