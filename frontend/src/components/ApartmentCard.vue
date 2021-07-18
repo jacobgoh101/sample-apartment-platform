@@ -24,7 +24,10 @@
           {{ item.numOfRooms }} room(s)
         </IconText>
         <IconText icon="mdi mdi-human-greeting" class="is-block mb-1">
-          <a :href="`mailto:${item.realtor.email}`">
+          <a
+            target="_blank"
+            :href="`mailto:${item.realtor.email}?subject=Apartment Rental Enquiry for ${item.name}`"
+          >
             Contact {{ item.realtor.name }} (Realtor)
           </a>
         </IconText>
