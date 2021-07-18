@@ -84,6 +84,7 @@ export class ApartmentService {
 
     const query = this.apartmentModel
       .query()
+      .withGraphFetched('realtor')
       .modify('defaultSelects')
       .page(+page - 1, +limit);
 

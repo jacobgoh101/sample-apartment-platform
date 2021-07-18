@@ -107,7 +107,7 @@
             <div class="column">
               <ValidationProvider
                 name="Latitude"
-                rules="required|between:-180.999999,180.999999"
+                rules="required|between:-90,90"
                 v-slot="{ errors }"
               >
                 <b-field

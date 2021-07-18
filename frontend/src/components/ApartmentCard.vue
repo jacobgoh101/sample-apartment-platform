@@ -23,6 +23,11 @@
         <IconText icon="mdi mdi-home-heart" class="is-block mb-1">
           {{ item.numOfRooms }} room(s)
         </IconText>
+        <IconText icon="mdi mdi-human-greeting" class="is-block mb-1">
+          <a :href="`mailto:${item.realtor.email}`">
+            Contact {{ item.realtor.name }} (Realtor)
+          </a>
+        </IconText>
       </div>
     </div>
   </div>

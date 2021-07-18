@@ -16,6 +16,7 @@ export class ApartmentModel extends BaseModel {
   coordinates: unknown;
   realtorId: number;
   status: APARTMENT_STATUS;
+  realtor?: UserModel;
 
   get pricePerMonth() {
     return +(Number(this.pricePerMonthInCents) / 100).toFixed(2);
