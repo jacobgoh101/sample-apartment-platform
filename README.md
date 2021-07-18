@@ -13,7 +13,7 @@ yarn start
 #### run migrations
 ```sh
 cd backend
-//TODO: change script
-yarn typeorm:migration:run 
+yarn migrate
+yarn seed
 cd ..
 ```

@@ -53,8 +53,9 @@ export const useDeleteUserHandler = () => {
             <div class="content">
               <p>Please disassociate these apartments from this user before deleting.</p>
               <ul>
-                ${data.map(
-                  (apartment) => `
+                ${data
+                  .map(
+                    (apartment) => `
                     <li><a target="_blank" href="${
                       router.resolve({
                         name: 'EditApartment',
@@ -64,7 +65,8 @@ export const useDeleteUserHandler = () => {
                       }).href
                     }">${apartment.name}</a></li>
                   `
-                )}
+                  )
+                  .join('\n')}
               </ul>
             </div>
           `,

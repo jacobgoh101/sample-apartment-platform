@@ -5,8 +5,8 @@ import { CasbinRule } from '@willsoto/casbin-objection-adapter';
 import { Knex } from 'knex';
 
 export async function seed(knex: Knex): Promise<any> {
-  const userModel = () => knex<UserModel>(UserModel.tableName);
-  const casbinRuleModel = () => knex<CasbinRule>(CasbinRule.tableName);
+  const userModel = () => knex(UserModel.tableName);
+  const casbinRuleModel = () => knex(CasbinRule.tableName);
   await addRealtor(
     'jacobgoh101+seeded-realtor-1@gmail.com',
     'Seeded Realtor 1',
@@ -17,18 +17,20 @@ export async function seed(knex: Knex): Promise<any> {
   );
 
   async function addRealtor(email: string, name: string) {
-    await userModel()
-      .insert({
-        email,
-        passwordHash: BCRYPT.hashPasswordSync('Pa$$w0rd!'),
-        name,
-        emailVerified: true,
-        blocked: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .catch(() => null);
-    const user = await userModel().where('email', email).first();
+    let user = await userModel().where('email', email).first();
+    if (!user)
+      try {
+        await userModel().insert({
+          email,
+          passwordHash: BCRYPT.hashPasswordSync('Pa$$w0rd!'),
+          name,
+          emailVerified: true,
+          blocked: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+        user = await userModel().where('email', email).first();
+      } catch (error) {}
     const realtorCasbinQuery = {
       ptype: 'g',
       v0: `${user.id}`,

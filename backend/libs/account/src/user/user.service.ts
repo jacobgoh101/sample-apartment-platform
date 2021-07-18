@@ -180,7 +180,7 @@ export class UserService {
       : undefined;
     const trimmedBody = omit(body, 'password');
 
-    const user = await this.userModel
+    let user = await this.userModel
       .query()
       .insert({ ...trimmedBody, passwordHash })
       .returning('*');
@@ -190,13 +190,15 @@ export class UserService {
       id: user?.id,
     });
 
+    user = await this.findOneById(user?.id);
+
     return user;
   }
 
   async deleteUserSessions(userId: number) {
     return this.sessionModel
       .query()
-      .whereRaw(`cast("json"->'passport'->'user'->>'id' as int) = ?`, [userId])
+      .whereRaw(`cast("sess"->'passport'->'user'->>'id' as int) = ?`, [userId])
       .delete();
   }
 

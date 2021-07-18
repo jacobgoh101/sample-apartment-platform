@@ -148,7 +148,7 @@ export class ApartmentService {
     if (!(await this.apartmentModel.query().findById(id)))
       throw new BadRequestException();
 
-    return this.apartmentModel.query().deleteById(id);
+    await this.apartmentModel.query().deleteById(id);
   }
 
   async getAllRealtors() {

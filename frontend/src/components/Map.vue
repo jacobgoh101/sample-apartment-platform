@@ -120,7 +120,7 @@ export default defineComponent<{
                 <span class="icon">
                   <i class="mdi mdi-human-greeting"></i>
                 </span>
-                <span><a href="mailto:${email}">Contact ${realtorName} (Realtor)</a></span>
+                <span><a target="_blank" href="mailto:${email}?subject=Apartment Rental Enquiry for ${name}">Contact ${realtorName} (Realtor)</a></span>
               </span>
             </div>
       `,

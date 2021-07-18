@@ -61,7 +61,7 @@ export default defineComponent({
 
     const page = ref(1);
     const limit = ref(12);
-    const view = ref<APARTMENT_LIST_VIEW>('MAP');
+    const view = ref<APARTMENT_LIST_VIEW>('LIST');
     const filters = reactive({
       floorAreaSquareMeter: [0, Math.pow(10, 8)],
       pricePerMonth: [0, Math.pow(10, 8)],
