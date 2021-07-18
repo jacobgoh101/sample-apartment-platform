@@ -196,7 +196,7 @@ export class UserService {
   async deleteUserSessions(userId: number) {
     return this.sessionModel
       .query()
-      .whereRaw(`cast("json"->'passport'->'user'->>'id' as int) = ?`, [userId])
+      .whereRaw(`cast("sess"->'passport'->'user'->>'id' as int) = ?`, [userId])
       .delete();
   }
 

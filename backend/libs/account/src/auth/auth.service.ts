@@ -46,6 +46,7 @@ export class AuthService {
   ): Promise<UserModel | null> {
     const user = await this.userService.findOneNonSocialUserByEmail(email);
     if (user?.blocked) {
+      await this.userService.deleteUserSessions(user?.id);
       throw new ForbiddenException(
         'Your account has been temporary suspended due to suspicious activity. Please contact support@apartmentrental.com ',
       );
