@@ -1,3 +1,5 @@
+import { User } from './user.types';
+
 export enum APARTMENT_STATUS {
   AVAILABLE = 'AVAILABLE',
   RENTED = 'RENTED',
@@ -14,6 +16,7 @@ export interface Apartment {
   longitude: number;
   latitude: number;
   realtorId: number;
+  realtor: User;
   pricePerMonth: number;
   status: APARTMENT_STATUS;
 }

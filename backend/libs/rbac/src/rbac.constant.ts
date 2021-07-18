@@ -8,10 +8,13 @@ export enum ROLES {
   CLIENT = 'CLIENT',
 }
 
-export enum RESOURCE {}
+export enum RESOURCE {
+  APARTMENTS = 'APARTMENTS',
+}
 
 export const getResourceId = (id: number, type: RESOURCE) => type + '_' + id;
 
 export enum RESOURCE_ACTION {
   WRITE = 'WRITE',
+  SEE_RENTED_APARTMENTS = 'SEE_RENTED_APARTMENTS',
 }

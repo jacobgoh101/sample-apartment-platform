@@ -1,7 +1,9 @@
 import { st } from '../../../apps/web/src/database/database.module';
 import { UserModel } from '../../account/src/user/user.model';
-import { ROLES } from '../../rbac/src/rbac.constant';
+import { RESOURCE, RESOURCE_ACTION, ROLES } from '../../rbac/src/rbac.constant';
+import { RbacService } from '../../rbac/src/rbac.service';
 import { Pagination } from '../../types/pagination.types';
+import { APARTMENT_STATUS } from './apartment.constant';
 import {
   CreateApartmentDto,
   FindApartmentQueryDto,
@@ -19,6 +21,7 @@ export class ApartmentService {
     private readonly apartmentModel: ModelClass<ApartmentModel>,
     @Inject('UserModel')
     private readonly userModel: ModelClass<UserModel>,
+    private readonly rbacService: RbacService,
   ) {}
 
   async create(body: CreateApartmentDto) {
@@ -60,6 +63,7 @@ export class ApartmentService {
 
   async find(
     conditions: FindApartmentQueryDto,
+    user: UserModel,
   ): Promise<Pagination<ApartmentModel>> {
     const {
       page = 1,
@@ -73,9 +77,14 @@ export class ApartmentService {
       sortedBy,
       longitude,
       latitude,
+      status,
     } = conditions || {};
+
+    await this.validateUserRoleForFindApartments(status, user);
+
     const query = this.apartmentModel
       .query()
+      .withGraphFetched('realtor')
       .modify('defaultSelects')
       .page(+page - 1, +limit);
 
@@ -90,6 +99,7 @@ export class ApartmentService {
       query.where('pricePerMonthInCents', '<=', maxPricePerMonth * 100);
     if (minNumOfRooms) query.where('numOfRooms', '>=', minNumOfRooms);
     if (maxNumOfRooms) query.where('numOfRooms', '<=', maxNumOfRooms);
+    if (status) query.where({ status });
     /* END handle filters */
 
     if (sortedBy === 'nearest')
@@ -109,6 +119,25 @@ export class ApartmentService {
         itemCount: results.length,
       },
     };
+  }
+
+  private async validateUserRoleForFindApartments(
+    status: APARTMENT_STATUS,
+    user: UserModel,
+  ) {
+    if (status !== APARTMENT_STATUS.RENTED) return;
+
+    if (!user?.id)
+      throw new BadRequestException('Not allowed to query rented apartments');
+
+    const isValid = await this.rbacService.hasImplicitPermissionForUser(
+      user?.id,
+      RESOURCE.APARTMENTS,
+      RESOURCE_ACTION.SEE_RENTED_APARTMENTS,
+    );
+
+    if (!isValid)
+      throw new BadRequestException('Not allowed to query rented apartments');
   }
 
   async findById(id: number): Promise<ApartmentModel> {

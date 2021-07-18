@@ -16,18 +16,16 @@ import {
   CreateApartmentDto,
   UpdateApartmentDto,
   Apartment,
+  FindApartmentQueryDto,
 } from '../types/apartment.types';
 import { AxiosResponse } from 'axios';
 import { fetchOnceQueryOption } from './util.hook';
 
-export const useApartments = ({ limit, page }: ToRefs<PagingOption>) => {
-  return useQuery(reactive(['get-apartment', limit, page]), () =>
-    getApartmentsApi(
-      reactive({
-        limit,
-        page,
-      })
-    )
+export const useApartments = (
+  params: ToRefs<PagingOption & FindApartmentQueryDto>
+) => {
+  return useQuery(reactive(['get-apartment', params]), () =>
+    getApartmentsApi(reactive(params))
   );
 };
 

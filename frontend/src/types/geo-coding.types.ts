@@ -17,3 +17,8 @@ enum OsmType {
   Node = 'node',
   Way = 'way',
 }
+
+export interface Coordinate {
+  lat: number;
+  lon: number;
+}

@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { NotificationProgrammatic } from 'buefy';
 import { watchEffect, Ref } from 'vue-demi';
 
-export const useErrorNitofication = (error: Ref<unknown>) => {
+export const useErrorNotification = (error: Ref<unknown>) => {
   watchEffect(() => {
     const errMsg =
       (error.value as AxiosError)?.response?.data?.message ||

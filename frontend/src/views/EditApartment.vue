@@ -107,7 +107,7 @@
             <div class="column">
               <ValidationProvider
                 name="Latitude"
-                rules="required|between:-180.999999,180.999999"
+                rules="required|between:-90,90"
                 v-slot="{ errors }"
               >
                 <b-field
@@ -198,7 +198,7 @@ import {
   watch,
 } from '@vue/composition-api';
 import { useRealtorGuard, useRoute } from '@/hooks/route.hook.ts';
-import { useErrorNitofication } from '@/hooks/error.hook.ts';
+import { useErrorNotification } from '@/hooks/error.hook.ts';
 import { APARTMENT_STATUS, CreateApartmentDto } from '../types/apartment.types';
 import { ROLES } from '../types/roles.types';
 import { AxiosError } from 'axios';
@@ -210,7 +210,7 @@ import {
 } from '../hooks/apartment.hook';
 import { once } from 'lodash';
 import LocationSearch from '@/components/LocationSearch.vue';
-import { LocationIqPlace } from '../types/geo-coding.types';
+import { Coordinate } from '../types/geo-coding.types';
 
 export default defineComponent({
   components: { LocationSearch },
@@ -251,7 +251,7 @@ export default defineComponent({
     });
     const searchLocationEnabled = ref(false);
 
-    const handleLocationSelect = (place: LocationIqPlace) => {
+    const handleLocationSelect = (place: Coordinate) => {
       if (!(place?.lon && place?.lat)) return;
       form.longitude = +place.lon;
       form.latitude = +place.lat;
@@ -288,7 +288,7 @@ export default defineComponent({
     const { isSuccess, isLoading, error, mutate } = useUpdateApartment();
     const router = useRouter();
 
-    useErrorNitofication(error);
+    useErrorNotification(error);
 
     watch(isSuccess, (isSuccess) => {
       if (isSuccess) router.push({ name: 'ManageApartments' });

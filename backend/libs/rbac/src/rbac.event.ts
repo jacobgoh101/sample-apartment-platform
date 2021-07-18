@@ -1,12 +1,7 @@
 import { USER_EVENT } from '../../account/src/user/user.constant';
 import { CreateUserDto, UpdateUserDto } from '../../account/src/user/user.dto';
 import { UserModel } from '../../account/src/user/user.model';
-import {
-  getResourceId,
-  RESOURCE,
-  ROLES,
-  RESOURCE_ACTION,
-} from './rbac.constant';
+import { ROLES } from './rbac.constant';
 import { RbacService } from './rbac.service';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -54,5 +49,10 @@ export class RbacEventHandler {
         ),
       ]);
     }
+  }
+
+  @OnEvent(USER_EVENT.DELETE)
+  async handleUserDeleteEvent(id: number) {
+    await this.rbacService.deleteRolesForUser(id);
   }
 }

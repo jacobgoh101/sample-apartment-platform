@@ -156,7 +156,8 @@ export class UserService {
   }
 
   async delete(id: number) {
-    return this.userModel.query().deleteById(id);
+    await this.userModel.query().deleteById(id);
+    this.eventEmitter.emit(USER_EVENT.DELETE, id);
   }
 
   async update(id: number, body: UpdateUserDto) {
