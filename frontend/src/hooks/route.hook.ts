@@ -40,6 +40,13 @@ export function onBeforeRouteLeave(callback: NavigationGuard<Vue>) {
 
 export function useAuthenticatedGuard() {
   useRoleValidityChecker();
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+  watchEffect(() => {
+    if (!isLoggedIn.value) {
+      router.push({ name: 'Login' });
+    }
+  });
 }
 
 export function useRealtorGuard() {
