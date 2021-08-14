@@ -1,8 +1,8 @@
 ### How to setup local development environment
 
 ```sh
-git clone git@git.toptal.com:screening/Jacob-Goh-Chuan-Ching-4.git
-cd Jacob-Goh-Chuan-Ching-4
+git clone git@github.com:jacobgoh101/sample-apartment-platform.git
+cd sample-apartment-platform
 cp .env.sample .env
 
 yarn 
