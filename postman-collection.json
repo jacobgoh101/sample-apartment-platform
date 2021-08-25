@@ -1,0 +1,616 @@
+{
+	"info": {
+		"_postman_id": "dd3910a0-f79b-4a52-8394-40a2e1dd2476",
+		"name": "Apart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"email\": \"jacobgoh101+{{$randomUserName}}@gmail.com\",\n    \"password\": \"Pa$$w0rd!\",\n    \"isOwner\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/users/register",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jacobgoh101+burukymyv@gmail.com\",\n    \"password\": \"Pa$$w0rd!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/sessions",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9091/api-v1/me",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Marge_Fadel\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/sessions",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In with Google",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessToken\": \"ya29.a0ARrdaM8iH4kAcpJGIxLiUQVH9zhqrQ3yoPSNwmqgjVf48f-E6l-jcEdOOAYUpDs3qzBBBBO8aRuMoZYstazrpF4R5zpHfTqCgN3dif6QUoOcAnUDDNr0LN96yQu_kXC9Bbq6kaDpSmbuvM3WwLTiEuazhfy8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/oauth2/google/sessions",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"oauth2",
+								"google",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In with Facebook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessToken\": \"EAANrLmYIVvABAHh6o3aUfy4okTzX3zceduiyrkyDrcvqglltQ5dD5gqylqjtbwT1FJT1MucQW2OeaVTsP0icDTg8MMtbmkzgAZC89ZCi6iYO5snp5ZAdtHPeOZCwXiDIbbzSphiNS7JAggZCfGJBsbAekDPFhEstZBBCteZCvTTlH7WzvM1scYZAzuvVZAcZALaJz2N6Y64OIZCLtnVCHnx6SiKNFtpOlLAZAhAZD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/oauth2/facebook/sessions",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"oauth2",
+								"facebook",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email Address",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"0b79d98eb7b99183106dd7785608744b\",\n    \"userId\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/email-verifications/verify",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"email-verifications",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Email Verification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jacobgoh101+Vivien67@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9091/api-v1/email-verifications",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"email-verifications"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "GET my roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9091/api-v1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GET users (admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api-v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE users (admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api-v1/users/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET user by ID (admin)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9091/api-v1/users/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"users",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT update users (admin)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"blocked\": false,\n    \"emailVerified\": true,\n    \"roles\": [\n        \"CLIENT\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9091/api-v1/users/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"users",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST create users (admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"Pa$$w0rd!\",\n    \"blocked\": false,\n    \"emailVerified\": true,\n    \"roles\": [\n        \"CLIENT\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9091/api-v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Apartment",
+			"item": [
+				{
+					"name": "Create Apartments",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomStreetName}}\",\n    \"description\":\"{{$randomLoremParagraph}}\",\n    \"floorAreaSquareMeter\" : {{$randomInt}},\n    \"pricePerMonth\" : {{$randomPrice}},\n    \"numOfRooms\" : {{$randomInt}},\n    \"longitude\" : {{$randomLongitude}},\n    \"latitude\" : {{$randomLatitude}},\n    \"realtorId\" : 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9091/api-v1/apartments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"apartments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Apartments",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomStreetName}}\",\n    \"description\":\"{{$randomLoremParagraph}}\",\n    \"floorAreaSquareMeter\" : {{$randomInt}},\n    \"pricePerMonth\" : {{$randomPrice}},\n    \"numOfRooms\" : {{$randomInt}},\n    \"longitude\" : {{$randomLongitude}},\n    \"latitude\" : {{$randomLatitude}},\n    \"realtorId\" : 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9091/api-v1/apartments/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"apartments",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Apartments",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomStreetName}}\",\n    \"description\":\"{{$randomLoremParagraph}}\",\n    \"floorAreaSquareMeter\" : {{$randomInt}},\n    \"pricePerMonth\" : {{$randomPrice}},\n    \"numOfRooms\" : {{$randomInt}},\n    \"longitude\" : {{$randomLongitude}},\n    \"latitude\" : {{$randomLatitude}},\n    \"realtorId\" : 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9091/api-v1/apartments/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"apartments",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Apartments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api-v1/apartments?minFloorAreaSquareMeter=1&maxFloorAreaSquareMeter=700&minPricePerMonth=1&maxPricePerMonth=7000&minNumOfRooms=1&maxNumOfRooms=5000&sortedBy=nearest&longitude=-75&latitude=43&status=AVAILABLE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"apartments"
+							],
+							"query": [
+								{
+									"key": "minFloorAreaSquareMeter",
+									"value": "1"
+								},
+								{
+									"key": "maxFloorAreaSquareMeter",
+									"value": "700"
+								},
+								{
+									"key": "minPricePerMonth",
+									"value": "1"
+								},
+								{
+									"key": "maxPricePerMonth",
+									"value": "7000"
+								},
+								{
+									"key": "minNumOfRooms",
+									"value": "1"
+								},
+								{
+									"key": "maxNumOfRooms",
+									"value": "5000"
+								},
+								{
+									"key": "sortedBy",
+									"value": "nearest"
+								},
+								{
+									"key": "longitude",
+									"value": "-75"
+								},
+								{
+									"key": "latitude",
+									"value": "43"
+								},
+								{
+									"key": "status",
+									"value": "AVAILABLE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Apartments by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api-v1/apartments/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"apartments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Realtors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api-v1/realtors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"realtors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Apartment by Realtor (admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api-v1/realtors/2/apartments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api-v1",
+								"realtors",
+								"2",
+								"apartments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
